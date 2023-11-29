@@ -72,7 +72,7 @@ class _SuaTaiKhoanState extends State<SuaTaiKhoan> {
                     )),
                     IconButton(
                       onPressed: () {
-                        // Xử lý sự kiện khi IconButton được nhấn
+                        // Nhảy qua trang đổi mật khẩu
                       },
                       icon: Icon(Icons.edit),
                     ),
