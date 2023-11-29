@@ -44,6 +44,19 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
               child: TextField(
                 obscureText: true,
                 decoration: InputDecoration(
+                  labelText: 'Số điện thoại',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                obscureText: true,
+                decoration: InputDecoration(
                   labelText: 'Mật khẩu',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
