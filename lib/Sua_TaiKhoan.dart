@@ -1,7 +1,7 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'QL_TaiKhoan.dart';
+import 'Profile.dart';
 
 class SuaTaiKhoan extends StatefulWidget {
   @override

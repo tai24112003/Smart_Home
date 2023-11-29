@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:smarthome/Sua_TaiKhoan.dart';
 import 'DK_TaiKhoan.dart';
-import 'QL_TaiKhoan.dart';
+import 'Profile.dart';
+import 'Sua_TaiKhoan.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,8 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => DkTaiKhoan(),
-        '/home': (context) => QL_TaiKhoan(),
+        '/home': (context) => SuaTaiKhoan(),
+        '/': (context) => QL_TaiKhoan(),
       },
       initialRoute: '/',
     );
