@@ -1,10 +1,23 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:smarthome/models/room.dart';
 
 class DevicceItem extends StatefulWidget {
-  const DevicceItem({super.key});
-
+  const DevicceItem({super.key, required this.device});
+  final Device device;
   @override
   State<DevicceItem> createState() => _DevicceItemState();
+}
+
+final DatabaseReference _databaseReference =
+    FirebaseDatabase.instance.reference();
+Future<void> _updateFirebaseStatus(String key, bool status) async {
+  try {
+    await _databaseReference.update({key: status});
+    print("Firebase update successful");
+  } catch (error) {
+    print("Error updating Firebase: $error");
+  }
 }
 
 class _DevicceItemState extends State<DevicceItem> {
@@ -32,7 +45,7 @@ class _DevicceItemState extends State<DevicceItem> {
                 children: [
                   Icon(Icons.lightbulb, size: 50),
                   Text(
-                    "Led",
+                    "LED",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -65,6 +78,7 @@ class _DevicceItemState extends State<DevicceItem> {
                           setState(() {
                             status = value;
                           });
+                          _updateFirebaseStatus(widget.device.id, status);
                         },
                       ),
                     ],
