@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "48058616834",
+    "project_id": "smarthome-f6a60",
+    "storage_bucket": "smarthome-f6a60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48058616834:android:0f8c3583e2f710d964ab1b",
+        "android_client_info": {
+          "package_name": "com.example.firebasetest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRqm0BjB_5cmevrlqKeZdu3Uz0foxgyYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48058616834:android:fdeb7f0fb4f2a5c564ab1b",
+        "android_client_info": {
+          "package_name": "com.example.smarthome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRqm0BjB_5cmevrlqKeZdu3Uz0foxgyYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
