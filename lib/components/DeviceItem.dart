@@ -91,4 +91,16 @@ class _DevicceItemState extends State<DevicceItem> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _databaseReference.child(widget.device.id).onValue.listen((event) {
+      var snapshot = event.snapshot;
+      setState(() {
+        status = snapshot.value == true;
+      });
+    });
+  }
 }
