@@ -19,7 +19,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     Room.getData().then((value) {
       setState(() {
         // Filter the room based on the condition
-        rooms = Room.rooms.firstWhere((element) => element.id == "khach",
+        rooms = Room.rooms.firstWhere((element) => element.id == "san",
             orElse: () => Room(id: "", name: "", devices: []));
 
         // Check if the room was found before accessing its devices
@@ -39,6 +39,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(rooms?.devices);
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
