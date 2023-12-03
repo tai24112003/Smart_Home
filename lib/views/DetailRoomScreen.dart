@@ -42,14 +42,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     description: e.description,
                   ))
               .toList();
-          motor = rooms!.devices
-              .where((e) => e.type == "servo")
-              .map((e) => Device(
-                    id: e.id,
-                    type: e.type,
-                    description: e.description,
-                  ))
-              .toList();
+          // motor = rooms!.devices
+          //     .where((e) => e.type == "servo")
+          //     .map((e) => Device(
+          //           id: e.id,
+          //           type: e.type,
+          //           description: e.description,
+          //         ))
+          //     .toList();
         }
       });
     });
