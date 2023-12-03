@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'DK_TaiKhoan.dart';
+import 'package:smarthome/views/DK_TaiKhoan.dart';
 
 class TaiKhoan extends StatelessWidget {
   TaiKhoan({super.key, required this.Username, required this.path});

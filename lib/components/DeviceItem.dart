@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/models/room.dart';
@@ -20,11 +22,31 @@ Future<void> _updateFirebaseStatus(String key, bool status) async {
   }
 }
 
+Future<void> _updateFirebaseStatusI(String key, int status) async {
+  try {
+    await _databaseReference.update({key: status});
+    print("Firebase update successful");
+  } catch (error) {
+    print("Error updating Firebase: $error");
+  }
+}
+
 class _DevicceItemState extends State<DevicceItem> {
   bool status = false;
+  double _sliderValue = 255;
   @override
   Widget build(BuildContext context) {
+    IconData iconW = Icons.lightbulb;
+    switch (widget.device.type) {
+      case "led":
+        iconW = Icons.lightbulb;
+        break;
+      case "servo":
+        iconW = Icons.settings;
+        break;
+    }
     return Container(
+      height: 125,
       width: (MediaQuery.of(context).size.width / 2) - 20,
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
@@ -43,11 +65,10 @@ class _DevicceItemState extends State<DevicceItem> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(Icons.lightbulb, size: 50),
-                  Text(
-                    "LED",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+                  Icon(
+                    iconW,
+                    size: 50,
+                    color: Color.fromRGBO(0, 0, 0, _sliderValue / 255),
                   ),
                 ],
               ),
@@ -64,24 +85,48 @@ class _DevicceItemState extends State<DevicceItem> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(status == false ? "Off" : "On",
-                          style: TextStyle(
+                  widget.device.id.contains("phongngu")
+                      ? Text(!status ? "Off" : "On",
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange))
+                      : Text(_sliderValue.ceil().toString(),
+                          style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.orange)),
-                      Switch(
-                        value: status,
-                        onChanged: (value) {
-                          setState(() {
-                            status = value;
-                          });
-                          _updateFirebaseStatus(widget.device.id, status);
-                        },
-                      ),
-                    ],
+                  widget.device.id.contains("phongngu")
+                      ? Switch(
+                          value: status,
+                          onChanged: (value) {
+                            setState(() {
+                              status = value;
+                            });
+                            _updateFirebaseStatus(widget.device.id, status);
+                          },
+                        )
+                      : SizedBox(
+                          child: Slider(
+                            min: 0,
+                            max: 255,
+                            value: _sliderValue,
+                            onChanged: (a) {
+                              setState(() {
+                                _sliderValue = a;
+                              });
+                            },
+                            onChangeEnd: (a) {
+                              _updateFirebaseStatusI(
+                                  widget.device.id, a.round());
+                            },
+                          ),
+                        ),
+                  Text(
+                    widget.device.id.toUpperCase(),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -100,6 +145,7 @@ class _DevicceItemState extends State<DevicceItem> {
       var snapshot = event.snapshot;
       setState(() {
         status = snapshot.value == true;
+        _sliderValue = double.parse(snapshot.value.toString());
       });
     });
   }
