@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smarthome/components/HomeDetail.dart';
+import 'package:smarthome/models/room.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,16 +8,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List lstroom= List.filled(0, Room(id: '', name: '', devices: List.filled(0, Device(id: '', type: '', description: ''))));
+  _loadata(){
+    setState(() {
+      Room.getData().then((value) => {
+        lstroom=Room.rooms
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: lstroom.length,
       child: Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.white,
           backgroundColor: const Color.fromRGBO(30, 53, 71, 1.0),
           title: const Text('Welcome Home'),
           bottom: TabBar(
+            isScrollable: true,
             unselectedLabelColor:const Color.fromRGBO(77, 101, 125, 1.0),
             labelColor: Colors.white,
             splashBorderRadius: BorderRadius.circular(50),
@@ -26,15 +36,19 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(50)
               
             ),
-            tabs: const [
-              Tab(text: 'Living Room',),
-              Tab(text: 'BedRoom'),
-              Tab(text: 'Bath'),
+            tabs:  [
+              ListView.builder(itemBuilder: (context, index) {
+                return Tab(text: lstroom[index].name);
+              },)
             ],
           ),
         ),
         body: TabBarView(
           children: [
+            HomeScreen_Detail(),
+            HomeScreen_Detail(),
+            HomeScreen_Detail(),
+            HomeScreen_Detail(),
             HomeScreen_Detail(),
             HomeScreen_Detail(),
             HomeScreen_Detail(),
