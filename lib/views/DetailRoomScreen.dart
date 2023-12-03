@@ -87,7 +87,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                   ),
                 )
               : Center(
-                  child: Text("Loading"),
+                  child: Text("Loading",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
                 ),
         ),
       ),

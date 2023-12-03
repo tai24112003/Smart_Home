@@ -6,8 +6,8 @@
 
 #define WIFI_SSID "Tai"
 #define WIFI_PASSWORD "01092003"
-#define FIREBASE_HOST "fir-test-ffd86-default-rtdb.firebaseio.com/"
-#define FIREBASE_AUTH "DoeLJVdRfZsbkovgQcOBOxvstTEWAT45SsJhI6uI"
+#define FIREBASE_HOST "smarthome-f6a60-default-rtdb.firebaseio.com/"
+#define FIREBASE_AUTH "1cAj58eFBmPDA7jrCgw34rXhsPNm1PhPuwmFJF8g"
 
 FirebaseData firebaseData;
 String lastStatus = "";
