@@ -21,6 +21,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: DetailRoomScreen(id: 1),
+      // routes: {
+      //   '/home': (context) => SuaTaiKhoan(),
+      //   '/': (context) => QL_TaiKhoan(),
+      // },
+      // initialRoute: '/',
     );
   }
 }

@@ -82,6 +82,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           ],
                         ),
                       ),
+                      Text("Led ${led.length}"),
                       BuildItem(list: led)
                     ],
                   ),
