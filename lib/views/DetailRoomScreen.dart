@@ -16,6 +16,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
       rooms; // Use nullable type since it might not find a room with the specified id
   List<Device> led = [];
   List<Device> motor = [];
+   List<Device> btn = [];
   void _loadData() {
     Room.getData().then((value) {
       setState(() {
@@ -33,14 +34,22 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     description: e.description,
                   ))
               .toList();
-          // motor = rooms!.devices
-          //     .where((e) => e.type == "servo")
-          //     .map((e) => Device(
-          //           id: e.id,
-          //           type: e.type,
-          //           description: e.description,
-          //         ))
-          //     .toList();
+           btn = rooms!.devices
+              .where((e) => e.type == "btn")
+              .map((e) => Device(
+                    id: e.id,
+                    type: e.type,
+                    description: e.description,
+                  ))
+              .toList();
+          motor = rooms!.devices
+              .where((e) => e.type == "servo")
+              .map((e) => Device(
+                    id: e.id,
+                    type: e.type,
+                    description: e.description,
+                  ))
+              .toList();
         }
       });
     });
@@ -93,6 +102,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       ),
                       BuildItem(list: led),
                       BuildItem(list: motor),
+                      BuildItem(list: btn),
                     ],
                   ),
                 )

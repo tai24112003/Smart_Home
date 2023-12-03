@@ -44,6 +44,9 @@ class _DevicceItemState extends State<DevicceItem> {
       case "servo":
         iconW = Icons.settings;
         break;
+      case "btn":
+        iconW = Icons.radio_button_checked;
+        break;
     }
     return Container(
       height: 125,
@@ -82,7 +85,8 @@ class _DevicceItemState extends State<DevicceItem> {
             flex: 2,
             child: SizedBox(
               height: 100,
-              child: Column(
+              child:widget.device.type!="btn"? 
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   widget.device.id.contains("phongngu")
@@ -129,7 +133,7 @@ class _DevicceItemState extends State<DevicceItem> {
                     textAlign: TextAlign.center,
                   ),
                 ],
-              ),
+              ):Center(child: Text(widget.device.description,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),textAlign: TextAlign.center,)),
             ),
           ),
         ],
