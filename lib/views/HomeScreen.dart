@@ -10,11 +10,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List lstroom= List.filled(0, Room(id: '', name: '', devices: List.filled(0, Device(id: '', type: '', description: ''))));
   _loadata(){
-    setState(() {
-      Room.getData().then((value) => {
-        lstroom=Room.rooms
-      });
+    Room.getData().then((value) {
+        setState(() {
+          lstroom=Room.rooms;
+        });
     });
+  }
+  @override
+  void initState() {
+    super.initState();
+    _loadata();
   }
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
           foregroundColor: Colors.white,
           backgroundColor: const Color.fromRGBO(30, 53, 71, 1.0),
           title: const Text('Welcome Home'),
-          bottom: TabBar(
+          bottom: TabBar( 
+            dividerColor: Colors.transparent,
+           indicatorSize:TabBarIndicatorSize.tab ,
+            labelPadding: EdgeInsets.fromLTRB(50, 0, 50, 0),
             isScrollable: true,
             unselectedLabelColor:const Color.fromRGBO(77, 101, 125, 1.0),
             labelColor: Colors.white,
@@ -36,23 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(50)
               
             ),
-            tabs:  [
-              ListView.builder(itemBuilder: (context, index) {
-                return Tab(text: lstroom[index].name);
-              },)
-            ],
+            tabs: lstroom.map((room) => Tab(text: room.name)).toList(),
+            
           ),
         ),
         body: TabBarView(
-          children: [
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-          ],
+          children: lstroom.map((room) => HomeScreenDetail(rooms: room)).toList(),
         ),
       ),
     );
