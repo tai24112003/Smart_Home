@@ -15,11 +15,12 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   Room?
       rooms; // Use nullable type since it might not find a room with the specified id
   List<Device> led = [];
+  List<Device> motor = [];
   void _loadData() {
     Room.getData().then((value) {
       setState(() {
         // Filter the room based on the condition
-        rooms = Room.rooms.firstWhere((element) => element.id == "san",
+        rooms = Room.rooms.firstWhere((element) => element.id == "phongngu1",
             orElse: () => Room(id: "", name: "", devices: []));
 
         // Check if the room was found before accessing its devices
@@ -32,6 +33,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     description: e.description,
                   ))
               .toList();
+          // motor = rooms!.devices
+          //     .where((e) => e.type == "servo")
+          //     .map((e) => Device(
+          //           id: e.id,
+          //           type: e.type,
+          //           description: e.description,
+          //         ))
+          //     .toList();
         }
       });
     });
@@ -82,7 +91,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                           ],
                         ),
                       ),
-                      BuildItem(list: led)
+                      BuildItem(list: led),
+                      BuildItem(list: motor),
                     ],
                   ),
                 )

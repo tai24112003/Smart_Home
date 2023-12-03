@@ -10,12 +10,11 @@ class BuildItem extends StatelessWidget {
     int count = list!.length;
     print(count);
     return Container(
-      height: MediaQuery.of(context).size.height - // Set the height explicitly
-          AppBar().preferredSize.height - // Consider the app bar height
-          MediaQuery.of(context).padding.bottom, // Consider the bottom padding
+      height:
+          125.0 * (list!.length / 2).ceil() + 20, // Consider the bottom padding
       child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.all(5),
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(5),
         itemCount: count,
         itemBuilder: (context, index) {
           if (count % 2 != 0 && index == count - 1) {
