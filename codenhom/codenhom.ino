@@ -5,7 +5,7 @@ unsigned long t_high2 = 0;
 unsigned long t_low = 0;
 String pass = "1010";
 String pass_in = "";
-bool system_lock = true;
+bool system_lock = false;
 String receivedChar;
 short pass_wrong = 0;
 short btn_pass = 2;
@@ -38,7 +38,7 @@ bool stt_led_hl = LOW;
 bool stt_led_p1 = LOW;
 bool stt_led_p2 = LOW;
 bool stt_led_bep = LOW;
-bool led_san_khach = 0;
+short led_san_khach = 0;
 short led_p1_hl = 0;
 short led_p2_hl = 0;
 short led_hl_bep = 0;
@@ -50,7 +50,7 @@ void setup() {
   Serial.begin(9600);
   lcd.init();
   lcd.backlight();
-  pinMode(btn_toilet, INPUT);
+  // pinMode(btn_toilet, INPUT);
   pinMode(btn_san_khach, INPUT);
   pinMode(btn_hl_bep, INPUT);
   pinMode(btn_p1, INPUT);
@@ -69,8 +69,8 @@ void setup() {
 void loop() {
   unsigned long t_cur = millis();
   int btn_cur_stt = digitalRead(btn_pass);
-   while (Serial.available() > 0) {
-    receivedChar = Serial.readString() ;
+  while (Serial.available() > 0) {
+    receivedChar = Serial.readString();
     // Xử lý dữ liệu từ ESP8266 (ví dụ: in ra Serial Monitor)
     int vt = receivedChar.indexOf(":");
     String key = receivedChar.substring(0, vt);
@@ -78,8 +78,18 @@ void loop() {
     key.trim();
     value.trim();
     bool boolvalue;
-    boolvalue=value.equalsIgnoreCase("true");
+    boolvalue = value.equalsIgnoreCase("true");
+    if (key == 'led_san')
+      stt_led_san = boolvalue;
+    else if (key == 'led_khach')
+      stt_led_khach = boolvalue;
+    else if (key == 'led_hl')
+      stt_led_hl = boolvalue;
+    else if (key == 'led_bep')
+      stt_led_bep = boolvalue;
+    
   }
+  system_lock=false;
   switch (system_lock) {
     case true:
       // Serial.print(digitalRead(btn_toilet));
@@ -189,7 +199,7 @@ void loop() {
           led_san_khach++;
           if (led_san_khach >= 4)
             led_san_khach = 0;
-          // Serial.println(led_san_khach);
+          
           switch (led_san_khach) {
             case 0:
               stt_led_san = 0;
@@ -211,8 +221,12 @@ void loop() {
               stt_led_khach = 1;
               break;
           }
-          Serial.println("led_san: ${stt_led_san}");
-          Serial.println("led_khach: ${stt_led_khach}");
+          String s="led_san: ";
+          s.concat(stt_led_san);
+          Serial.println(s);
+          s="led_khach: ";
+          s.concat(stt_led_khach);
+          Serial.println(s);
         }
       } else {
 
@@ -244,8 +258,12 @@ void loop() {
               stt_led_bep = 1;
               break;
           }
-          Serial.println("led_bep: ${stt_led_bep}");
-          Serial.println("led_hl: ${stt_led_hl}");
+          String s="led_bep: ";
+          s.concat(stt_led_bep);
+          Serial.println(s);
+          s="led_hl: ";
+          s.concat(stt_led_hl);
+          Serial.println(s);
         }
 
       } else {
@@ -307,6 +325,8 @@ void loop() {
         if (stt_btn_baodong == false) {
           baodong = !baodong;
           stt_btn_baodong = true;
+          String s="baodong: ";
+          s.concat(baodong);
           Serial.println("baodong: ${baodong}");
         }
 
@@ -382,6 +402,7 @@ void loop() {
               digitalWrite(led_bep, 0);
               led_p1_hl = 0;
               led_san_khach = 0;
+              
               led_p2_hl = 0;
               led_hl_bep = 0;
               lcd.clear();
