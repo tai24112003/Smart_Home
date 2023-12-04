@@ -1,0 +1,4 @@
+<resources>
+    <string name="example_string">Example String</string>
+    <string name="default_notification_channel_id">Thông Báo</string>
+</resources>
