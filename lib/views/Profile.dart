@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smarthome/components/Account.dart';
 import 'package:smarthome/components/UserInfo.dart';
-import '../DK_TaiKhoan.dart';
+
+import 'DK_TaiKhoan.dart';
 
 class QL_TaiKhoan extends StatefulWidget {
   const QL_TaiKhoan({super.key});

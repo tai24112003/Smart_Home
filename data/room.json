@@ -1,0 +1,63 @@
+[
+    {
+        "id": "khach",
+        "name":"Phòng khách",
+        "devices":[
+            {"id":"led_khach", "type":"led"},
+            {"id":"btn_khach", "type":"btn","description":"Bật đèn phòng khách"},
+            {"id":"arduino", "type":"board"}
+        ]
+    },
+    {
+        "id": "san",
+        "name":"Sân",
+        "devices":[
+            {"id":"led_san", "type":"led"},
+            {"id":"btn_san", "type":"btn", "description":"Bật đèn sân"},
+            {"id":"lcd_san", "type":"screen", "description":"Hiển thị mật khẩu và thông tin các thiết bị"},
+            {"id":"sensor_rain", "type":"sensor", "description":"Cảm biến mưa để điều khiển rèm"},
+            {"id":"servo", "type":"servo","description":"Điều khiển rèm che"}
+        ]
+    },
+    {
+        "id": "phongngu1",
+        "name":"Phòng ngủ 1",
+        "devices":[
+            {"id":"led_ngu1", "type":"led"},
+            {"id":"btn_ngu1", "type":"btn", "description":"Bật đèn phòng ngủ"}
+        ]
+    },
+    {
+        "id": "phongngu2",
+        "name":"Phòng ngủ 2",
+        "devices":[
+            {"id":"led_ngu2", "type":"led"},
+            {"id":"btn_ngu2", "type":"btn", "description":"Bật đèn phòng ngủ"}
+        ]
+    },
+    {
+        "id": "hanhlang",
+        "name":"Hành lang",
+        "devices":[
+            {"id":"led_hanhlang", "type":"led"},
+            {"id":"btn_hanhlang", "type":"btn", "description":"Bật đèn hành lang và bếp"}
+        ]
+    },
+    {
+        "id": "bep",
+        "name":"Phòng bếp",
+        "devices":[
+            {"id":"led_bep", "type":"led"},
+            {"id":"sensor_smoke", "type":"sensor", "description":"Cảm biến khói để bật cảnh báo"}
+        ]
+    },
+    {
+        "id": "toilet",
+        "name":"Phòng vệ sinh",
+        "devices":[
+            {"id":"led_vs", "type":"led"},
+            {"id":"btn_vs", "type":"btn", "description":"Nút bật đèn vệ sinh"},
+            {"id":"sensor_light", "type":"sensor", "description":"Cảm biến ánh sáng để tự động dội nước"}
+        ]
+    }
+]

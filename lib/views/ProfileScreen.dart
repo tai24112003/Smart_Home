@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:smarthome/components/HomeDetail.dart';
-
-class HomeScreen extends StatefulWidget {
+import 'package:smarthome/components/ProfileDetail.dart';
+import 'package:smarthome/components/ProfileAccountManager.dart';
+class ProfileScreen extends StatefulWidget {
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.white,
@@ -27,18 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
               
             ),
             tabs: const [
-              Tab(text: 'Living Room',),
-              Tab(text: 'BedRoom'),
-              Tab(text: 'Bath'),
+              Tab(text: 'Account Info',),
+              Tab(text: 'Account Manager'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
-            HomeScreen_Detail(),
+              ProfileDetail(),
+              ProfileAccountScreen()
           ],
+          
         ),
       ),
     );
