@@ -19,12 +19,12 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  String messageLogin="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      bottomNavigationBar: BottomAppBarCustom(
-        active: 0,
+      appBar: AppBar(
+        backgroundColor:const Color.fromRGBO(30, 53, 71, 1)
       ),
       backgroundColor: const Color.fromRGBO(30, 53, 71, 1),
       body: SingleChildScrollView(
@@ -110,6 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+            SizedBox(height: 50),
+            Text(messageLogin,style: TextStyle(color: Colors.white),),
             SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -238,8 +240,9 @@ class _LoginPageState extends State<LoginPage> {
       // Chuyển hướng đến trang chủ hoặc thực hiện các tác vụ liên quan
      Navigator.pushReplacementNamed(context, '/home'); 
     } catch (e) {
-      // Xử lý lỗi nếu có
-      print('Lỗi đăng nhập: $e');
+     setState(() {
+       messageLogin="Đăng nhập không thành công";
+     });
     }
   }
 
