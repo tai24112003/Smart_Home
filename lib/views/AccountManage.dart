@@ -12,10 +12,38 @@ class QL_TaiKhoan extends StatefulWidget {
 
 class _QL_TaiKhoanState extends State<QL_TaiKhoan> {
   String userId = "";
+  late String displayName = "";
+  late String email = "";
+  @override
+  void initState() {
+    super.initState();
+    // Lấy thông tin người dùng hiện tại một lần
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (snapshot.exists) {
+        var userData = snapshot.data()!;
+        setState(() {
+          displayName = userData['displayName'] ?? 'Không có tên hiển thị';
+          email = userData['email'] ?? 'Không có email';
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    _configureFirebaseMessaging();
+    //_configureFirebaseMessaging();
     return DefaultTabController(
       length: 2, // Số lượng TabBar
       child: Scaffold(
@@ -37,41 +65,27 @@ class _QL_TaiKhoanState extends State<QL_TaiKhoan> {
         body: TabBarView(
           children: [
             Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 50,
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 220,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(26, 42, 57, 1),
-                      borderRadius: BorderRadius.circular(15)),
-                  padding: EdgeInsets.all(20),
-                  child: StreamBuilder<User?>(
-                    stream: FirebaseAuth.instance.authStateChanges(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      }
-                      if (!snapshot.hasData) {
-                        return Text('Người dùng chưa đăng nhập');
-                      }
-                      // Lấy thông tin người dùng hiện tại
-                      User? user = snapshot.data;
-                      return Column(
-                        children: [
-                          Text('Email: ${user!.email}',
-                              style: TextStyle(color: Colors.white)),
-                          Text('Tên hiển thị: ${user.displayName}',
-                              style: TextStyle(color: Colors.white)),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    height: 220,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(26, 42, 57, 1),
+                        borderRadius: BorderRadius.circular(15)),
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Tên: $displayName',
+                            style: TextStyle(color: Colors.white)),
+                        Text('Email: $email',
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    )),
                 SizedBox(
                   height: 25,
                 ),
@@ -234,55 +248,55 @@ class _QL_TaiKhoanState extends State<QL_TaiKhoan> {
     });
   }
 
-  void _configureFirebaseMessaging() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Xử lý thông báo nhận được khi ứng dụng đang chạy
-      String title = message.notification?.title ?? "";
-      String body = message.notification?.body ?? "";
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(body),
-            actions: [
-              TextButton(
-                child: Text("Từ chối"),
-                onPressed: () {
-                  // Xử lý khi từ chối tài khoản
-                  Navigator.of(context).pop();
-                  sendResponse(false);
-                },
-              ),
-              TextButton(
-                child: Text("Chấp nhận"),
-                onPressed: () {
-                  // Xử lý khi chấp nhận tài khoản
-                  Navigator.of(context).pop();
-                  sendResponse(true);
-                },
-              ),
-            ],
-          );
-        },
-      );
-    });
+  // void _configureFirebaseMessaging() {
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     // Xử lý thông báo nhận được khi ứng dụng đang chạy
+  //     String title = message.notification?.title ?? "";
+  //     String body = message.notification?.body ?? "";
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text(title),
+  //           content: Text(body),
+  //           actions: [
+  //             TextButton(
+  //               child: Text("Từ chối"),
+  //               onPressed: () {
+  //                 // Xử lý khi từ chối tài khoản
+  //                 Navigator.of(context).pop();
+  //                 sendResponse(false);
+  //               },
+  //             ),
+  //             TextButton(
+  //               child: Text("Chấp nhận"),
+  //               onPressed: () {
+  //                 // Xử lý khi chấp nhận tài khoản
+  //                 Navigator.of(context).pop();
+  //                 sendResponse(true);
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   });
 
-    FirebaseMessaging.onBackgroundMessage((message) {
-      // Xử lý thông báo nhận được khi ứng dụng đang chạy trong nền
-      // Trả về một Future để đảm bảo xử lý kết thúc trước khi ứng dụng bị hủy bỏ
-      return Future.value();
-    });
-  }
+  //   FirebaseMessaging.onBackgroundMessage((message) {
+  //     // Xử lý thông báo nhận được khi ứng dụng đang chạy trong nền
+  //     // Trả về một Future để đảm bảo xử lý kết thúc trước khi ứng dụng bị hủy bỏ
+  //     return Future.value();
+  //   });
+  // }
 
-  void sendResponse(bool accepted) {
-    // Xử lý gửi phản hồi đến người dùng
-    if (accepted) {
-      // Nếu tài khoản được chấp nhận, thực hiện các hành động liên quan
-      print('Tài khoản đã được chấp nhận.');
-    } else {
-      // Nếu tài khoản bị từ chối, thực hiện các hành động liên quan
-      print('Tài khoản đã bị từ chối.');
-    }
-  }
+  // void sendResponse(bool accepted) {
+  //   // Xử lý gửi phản hồi đến người dùng
+  //   if (accepted) {
+  //     // Nếu tài khoản được chấp nhận, thực hiện các hành động liên quan
+  //     print('Tài khoản đã được chấp nhận.');
+  //   } else {
+  //     // Nếu tài khoản bị từ chối, thực hiện các hành động liên quan
+  //     print('Tài khoản đã bị từ chối.');
+  //   }
+  // }
 }

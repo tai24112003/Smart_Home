@@ -1,4 +1,6 @@
 #include <LiquidCrystal_I2C.h>
+#include <Servo.h>
+Servo myservo;
 LiquidCrystal_I2C lcd(0X27, 16, 2);
 unsigned long t_high = 0;
 unsigned long t_high2 = 0;
@@ -11,9 +13,11 @@ short pass_wrong = 0;
 short btn_pass = 2;
 //led system
 short btn_toilet = 0;
-short led_toilet = 1;
+// short led_toilet = 1;
 short btn_san_khach = 3;
-short btn_hl_bep = 4;
+//short btn_hl_bep = 4;
+short servo = 4;
+
 short btn_p1 = 5;
 short btn_p2 = 6;
 short btn_baodong = 7;
@@ -38,11 +42,21 @@ bool stt_led_hl = LOW;
 bool stt_led_p1 = LOW;
 bool stt_led_p2 = LOW;
 bool stt_led_bep = LOW;
+
+
+int dosang=0;
+int dosang2 =0;
+
+bool stt_servo = false;
+unsigned long time_quay = 0;
+
 short led_san_khach = 0;
 short led_p1_hl = 0;
 short led_p2_hl = 0;
 short led_hl_bep = 0;
 bool baodong = false;
+
+
 //LCD
 short col = 0;
 unsigned long time_open = 0;
@@ -50,9 +64,10 @@ void setup() {
   Serial.begin(9600);
   lcd.init();
   lcd.backlight();
+  myservo.attach(4);
   // pinMode(btn_toilet, INPUT);
   pinMode(btn_san_khach, INPUT);
-  pinMode(btn_hl_bep, INPUT);
+  //  pinMode(btn_hl_bep, INPUT);
   pinMode(btn_p1, INPUT);
   pinMode(btn_p2, INPUT);
   pinMode(btn_pass, INPUT);
@@ -63,7 +78,7 @@ void setup() {
   pinMode(led_p1, OUTPUT);
   pinMode(led_p2, OUTPUT);
   pinMode(led_bep, OUTPUT);
-  pinMode(led_toilet, OUTPUT);
+  //  pinMode(led_toilet, OUTPUT);
 }
 
 void loop() {
@@ -77,24 +92,35 @@ void loop() {
     String value = receivedChar.substring(vt + 1);
     key.trim();
     value.trim();
+    
+    if(key == "led_ngu1") dosang = value.toInt();
     bool boolvalue;
-    boolvalue = value.equalsIgnoreCase("true");
-    if (key == 'led_san')
+
+    analogWrite()
+    boolvalue = value == "1";
+    if (key.equals("led_san"))
       stt_led_san = boolvalue;
-    else if (key == 'led_khach')
+    else if (key.equals("led_khach"))
       stt_led_khach = boolvalue;
-    else if (key == 'led_hl')
+    else if (key.equals("led_hl"))
       stt_led_hl = boolvalue;
-    else if (key == 'led_bep')
+    else if (key.equals("led_bep"))
       stt_led_bep = boolvalue;
+    else if (key.equals("servo")) 
+      stt_servo = boolvalue;
+    else if(key.equals("led_ngu1"))
+      dosang = value.toInt();
+    else if(key.equals("led_ngu2"))
+      dosang2 = value.toInt();
+
     
   }
-  system_lock=false;
+  system_lock = false; 
   switch (system_lock) {
     case true:
       // Serial.print(digitalRead(btn_toilet));
       lcd.setCursor(0, 0);
-      lcd.print("Khoa He Thong");
+      lcd.print("Khoa He Thong")
       if (btn_cur_stt == 1) {
 
         if (t_high == 0)
@@ -192,6 +218,19 @@ void loop() {
       lcd.setCursor(col, 0);
       lcd.print("WELCOME!!");
 
+      if (stt_servo == true) {
+        myservo.write(180);
+        stt_servo = false;
+        String s = "servo: ";
+        s.concat(stt_servo);
+        Serial.println(s);
+        time_quay = millis();
+      } else if (millis() - time_quay >= 2000) {
+        myservo.write(90);
+        time_quay = millis();
+      }
+      analogWrite(led_p1,dosang);
+      analogWrite(led_p2,dosang2);
       if (digitalRead(btn_san_khach)) {
 
         if (stt_btn_san_khach == false) {
@@ -199,7 +238,7 @@ void loop() {
           led_san_khach++;
           if (led_san_khach >= 4)
             led_san_khach = 0;
-          
+
           switch (led_san_khach) {
             case 0:
               stt_led_san = 0;
@@ -221,10 +260,10 @@ void loop() {
               stt_led_khach = 1;
               break;
           }
-          String s="led_san: ";
+          String s = "led_san: ";
           s.concat(stt_led_san);
           Serial.println(s);
-          s="led_khach: ";
+          s = "led_khach: ";
           s.concat(stt_led_khach);
           Serial.println(s);
         }
@@ -258,10 +297,10 @@ void loop() {
               stt_led_bep = 1;
               break;
           }
-          String s="led_bep: ";
+          String s = "led_bep: ";
           s.concat(stt_led_bep);
           Serial.println(s);
-          s="led_hl: ";
+          s = "led_hl: ";
           s.concat(stt_led_hl);
           Serial.println(s);
         }
@@ -325,7 +364,7 @@ void loop() {
         if (stt_btn_baodong == false) {
           baodong = !baodong;
           stt_btn_baodong = true;
-          String s="baodong: ";
+          String s = "baodong: ";
           s.concat(baodong);
           Serial.println("baodong: ${baodong}");
         }
@@ -402,7 +441,7 @@ void loop() {
               digitalWrite(led_bep, 0);
               led_p1_hl = 0;
               led_san_khach = 0;
-              
+
               led_p2_hl = 0;
               led_hl_bep = 0;
               lcd.clear();
