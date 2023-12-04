@@ -5,9 +5,12 @@ LiquidCrystal_I2C lcd(0X27, 16, 2);
 unsigned long t_high = 0;
 unsigned long t_high2 = 0;
 unsigned long t_low = 0;
+int trim_led_p1 = 0;  // Giá trị hiện tại của biến trở
+int trim_led_p2 = 0;
 String pass = "1010";
 String pass_in = "";
 bool system_lock = false;
+
 String receivedChar;
 short pass_wrong = 0;
 short btn_pass = 2;
@@ -15,11 +18,11 @@ short btn_pass = 2;
 short btn_toilet = 0;
 // short led_toilet = 1;
 short btn_san_khach = 3;
-//short btn_hl_bep = 4;
+short btn_hl_bep = 4;
 short servo = 4;
 
-short btn_p1 = 5;
-short btn_p2 = 6;
+short pot_p1 = A0;
+short pot_p2 = A1;
 short btn_baodong = 7;
 //short btn_toilet=6;
 short led_san = 8;
@@ -42,10 +45,11 @@ bool stt_led_hl = LOW;
 bool stt_led_p1 = LOW;
 bool stt_led_p2 = LOW;
 bool stt_led_bep = LOW;
+bool stt_pot_p1 = false;
+bool stt_pot_p2 = false;
 
-
-int dosang=0;
-int dosang2 =0;
+int dosang = 0;
+int dosang2 = 0;
 
 bool stt_servo = false;
 unsigned long time_quay = 0;
@@ -67,9 +71,9 @@ void setup() {
   myservo.attach(4);
   // pinMode(btn_toilet, INPUT);
   pinMode(btn_san_khach, INPUT);
-  //  pinMode(btn_hl_bep, INPUT);
-  pinMode(btn_p1, INPUT);
-  pinMode(btn_p2, INPUT);
+  //  pinMode(btn_hl_bep, INPUT)
+  pinMode(pot_p1, INPUT);
+  pinMode(pot_p2, INPUT);
   pinMode(btn_pass, INPUT);
   pinMode(btn_baodong, INPUT);
   pinMode(led_san, OUTPUT);
@@ -84,6 +88,8 @@ void setup() {
 void loop() {
   unsigned long t_cur = millis();
   int btn_cur_stt = digitalRead(btn_pass);
+  int value_pot_p1 = analogRead(pot_p1);
+  int value_pot_p2 = analogRead(pot_p1);
   while (Serial.available() > 0) {
     receivedChar = Serial.readString();
     // Xử lý dữ liệu từ ESP8266 (ví dụ: in ra Serial Monitor)
@@ -92,11 +98,10 @@ void loop() {
     String value = receivedChar.substring(vt + 1);
     key.trim();
     value.trim();
-    
-    if(key == "led_ngu1") dosang = value.toInt();
+
+    if (key == "led_ngu1") dosang = value.toInt();
     bool boolvalue;
 
-    analogWrite()
     boolvalue = value == "1";
     if (key.equals("led_san"))
       stt_led_san = boolvalue;
@@ -106,21 +111,19 @@ void loop() {
       stt_led_hl = boolvalue;
     else if (key.equals("led_bep"))
       stt_led_bep = boolvalue;
-    else if (key.equals("servo")) 
+    else if (key.equals("servo"))
       stt_servo = boolvalue;
-    else if(key.equals("led_ngu1"))
+    else if (key.equals("led_ngu1"))
       dosang = value.toInt();
-    else if(key.equals("led_ngu2"))
+    else if (key.equals("led_ngu2"))
       dosang2 = value.toInt();
-
-    
   }
-  system_lock = false; 
+  system_lock = false;
   switch (system_lock) {
     case true:
       // Serial.print(digitalRead(btn_toilet));
       lcd.setCursor(0, 0);
-      lcd.print("Khoa He Thong")
+      lcd.print("Khoa He Thong");
       if (btn_cur_stt == 1) {
 
         if (t_high == 0)
@@ -214,6 +217,8 @@ void loop() {
         col++;
         lcd.clear();
       }
+      stt_pot_p1=true;
+      stt_pot_p2=true;
 
       lcd.setCursor(col, 0);
       lcd.print("WELCOME!!");
@@ -229,8 +234,21 @@ void loop() {
         myservo.write(90);
         time_quay = millis();
       }
-      analogWrite(led_p1,dosang);
-      analogWrite(led_p2,dosang2);
+
+      if (stt_pot_p1==true) {
+        analogWrite(led_p1, map(value_pot_p1, 0, 1023, 0, 255));
+        Serial.println("Updated brightness: " + String(value_pot_p1));
+        Serial.println("Updated brightness: " + String(map(value_pot_p2, 0, 1023, 0, 255)));
+      }
+      if (stt_pot_p2) {
+        // Serial.println(value_pot_p2);
+        analogWrite(led_p2, map(value_pot_p2, 0, 1023, 0, 255));
+        Serial.println("Updated brightness: " + String(map(value_pot_p2, 0, 1023, 0, 255)));
+      }
+
+      // analogWrite(led_p1, dosang);
+      // analogWrite(led_p2, dosang2);
+
       if (digitalRead(btn_san_khach)) {
 
         if (stt_btn_san_khach == false) {
@@ -310,56 +328,56 @@ void loop() {
       }
       digitalWrite(led_bep, stt_led_bep);
       digitalWrite(led_hl, stt_led_hl);
-      if (digitalRead(btn_p1)) {
+      // if (digitalRead(btn_p1)) {
 
-        if (stt_btn_p1 == false) {
-          stt_btn_p1 = true;
-          led_p1_hl++;
-          if (led_p1_hl >= 3)
-            led_p1_hl = 0;
-          // Serial.println(led_p1_hl);
-        }
-      } else {
+      //   if (stt_btn_p1 == false) {
+      //     stt_btn_p1 = true;
+      //     led_p1_hl++;
+      //     if (led_p1_hl >= 3)
+      //       led_p1_hl = 0;
+      //     // Serial.println(led_p1_hl);
+      //   }
+      // } else {
 
-        stt_btn_p1 = false;
-      }
-      switch (led_p1_hl) {
-        case 0:
-          digitalWrite(led_p1, 0);
-          break;
-        case 1:
-          analogWrite(led_p1, 255);
-          break;
-        case 2:
-          analogWrite(led_p1, 50);
-          ;
-          break;
-      }
-      if (digitalRead(btn_p2)) {
+      //   stt_btn_p1 = false;
+      // }
+      // switch (led_p1_hl) {
+      //   case 0:
+      //     digitalWrite(led_p1, 0);
+      //     break;
+      //   case 1:
+      //     analogWrite(led_p1, 255);
+      //     break;
+      //   case 2:
+      //     analogWrite(led_p1, 50);
+      //     ;
+      //     break;
+      // }
+      // if (digitalRead(btn_p2)) {
 
-        if (stt_btn_p2 == false) {
-          stt_btn_p2 = true;
-          led_p2_hl++;
-          if (led_p2_hl >= 3)
-            led_p2_hl = 0;
-          // Serial.println(led_p2_hl);
-        }
-      } else {
+      //   if (stt_btn_p2 == false) {
+      //     stt_btn_p2 = true;
+      //     led_p2_hl++;
+      //     if (led_p2_hl >= 3)
+      //       led_p2_hl = 0;
+      //     // Serial.println(led_p2_hl);
+      //   }
+      // } else {
 
-        stt_btn_p2 = false;
-      }
-      switch (led_p2_hl) {
-        case 0:
-          digitalWrite(led_p2, 0);
-          break;
-        case 1:
-          analogWrite(led_p2, 255);
-          break;
-        case 2:
-          analogWrite(led_p2, 50);
-          ;
-          break;
-      }
+      //   stt_btn_p2 = false;
+      // }
+      // switch (led_p2_hl) {
+      //   case 0:
+      //     digitalWrite(led_p2, 0);
+      //     break;
+      //   case 1:
+      //     analogWrite(led_p2, 255);
+      //     break;
+      //   case 2:
+      //     analogWrite(led_p2, 50);
+      //     ;
+      //     break;
+      // }
       if (digitalRead(btn_baodong)) {
         if (stt_btn_baodong == false) {
           baodong = !baodong;
@@ -404,7 +422,8 @@ void loop() {
           pass_in = "";
           pass_wrong = 0;
           col = 0;
-
+          stt_pot_p1=false;
+          stt_pot_p2=false;
 
           digitalWrite(led_san, 0);
           digitalWrite(led_khach, 0);
@@ -430,7 +449,10 @@ void loop() {
               t_high2 = 0;
               t_low = 0;
               col = 0;
+              
               system_lock = true;
+              stt_pot_p1=false;
+              stt_pot_p2=false;
               pass_in = "";
               pass_wrong = 0;
               digitalWrite(led_san, 0);

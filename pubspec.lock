@@ -138,11 +138,7 @@ packages:
     source: hosted
     version: "7.0.0"
   firebase_auth:
-<<<<<<< HEAD
     dependency: "direct dev"
-=======
-    dependency: "direct main"
->>>>>>> a0ee346095469ac0e6dd32305cfc74f2ebda4a70
     description:
       name: firebase_auth
       sha256: "869ff488c7b467e273d7be223f52d3d026576b6e1da92dcd136ff627ae0a8c67"
@@ -214,11 +210,7 @@ packages:
     source: hosted
     version: "0.2.3+14"
   firebase_messaging:
-<<<<<<< HEAD
     dependency: "direct dev"
-=======
-    dependency: "direct main"
->>>>>>> a0ee346095469ac0e6dd32305cfc74f2ebda4a70
     description:
       name: firebase_messaging
       sha256: "260064e1b512a9e1970b5964d645eba888208ca3de42459c38e484c8ecdc37a9"
@@ -281,11 +273,7 @@ packages:
     source: hosted
     version: "0.2.2"
   google_sign_in:
-<<<<<<< HEAD
     dependency: "direct dev"
-=======
-    dependency: "direct main"
->>>>>>> a0ee346095469ac0e6dd32305cfc74f2ebda4a70
     description:
       name: google_sign_in
       sha256: "8f8b94880f2753ccb796744259da529674e49b9af2e372abf6978c590c0ebfef"
@@ -397,11 +385,7 @@ packages:
     source: hosted
     version: "1.8.3"
   permission_handler:
-<<<<<<< HEAD
     dependency: "direct dev"
-=======
-    dependency: "direct main"
->>>>>>> a0ee346095469ac0e6dd32305cfc74f2ebda4a70
     description:
       name: permission_handler
       sha256: "5749ebeb7ec0c3865ea17e3eb337174b87747be816dab582c551e1aff6f6bbf3"
@@ -566,9 +550,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-<<<<<<< HEAD
-  dart: ">=3.1.5 <4.0.0"
-=======
   dart: ">=3.1.2 <4.0.0"
->>>>>>> a0ee346095469ac0e6dd32305cfc74f2ebda4a70
   flutter: ">=3.13.0"
