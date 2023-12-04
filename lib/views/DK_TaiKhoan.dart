@@ -13,6 +13,7 @@ class DkTaiKhoan extends StatefulWidget {
 }
 
 class _DkTaiKhoanState extends State<DkTaiKhoan> {
+  String noti = "";
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   late TextEditingController _rePasword;
@@ -171,25 +172,26 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 ),
               ),
             ),
+            Text("${noti}", style: TextStyle(color: Colors.red)),
             SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
-                // if (_passwordController.text
-                //         .compareTo(_passwordController.text) ==
-                //     0) {
-                registerWithEmailPassword(_usernameController.text,
-                    _passwordController.text, _displayName.text);
-                // signUp(_usernameController.text, _passwordController.text);
-                // saveAccountInfo(
-                //     _usernameController.text, _passwordController.text);
-                // saveCredentials(
-                //     _usernameController.text, _passwordController.text);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-                // } else
-                //   _rePasword.text = "Mật khẩu không chính xác";
+                if (_passwordController.text
+                        .compareTo(_passwordController.text) ==
+                    0) {
+                  registerWithEmailPassword(_usernameController.text,
+                      _passwordController.text, _displayName.text);
+                  // signUp(_usernameController.text, _passwordController.text);
+                  // saveAccountInfo(
+                  //     _usernameController.text, _passwordController.text);
+                  // saveCredentials(
+                  //     _usernameController.text, _passwordController.text);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                } else
+                  noti = "Mật khẩu xác nhận không chính xác";
 
                 // Xử lý khi nút được nhấn
               },

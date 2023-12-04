@@ -261,7 +261,7 @@ void loop() {
       }
       digitalWrite(led_san, stt_led_san);
       digitalWrite(led_khach, stt_led_khach);
-      if (/*digitalRead(btn_hl_bep)*/ false) {
+      if (digitalRead(btn_hl_bep)) {
         if (stt_btn_hl == false) {
           led_hl_bep++;
           if (led_hl_bep > 3)

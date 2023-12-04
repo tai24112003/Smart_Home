@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:smarthome/components/AppBar.dart';
+import 'package:smarthome/components/BottomNav.dart';
 import 'AccountManage.dart';
 import 'DK_TaiKhoan.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,7 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(30, 53, 71, 1),
+      appBar: AppBar(),
+      bottomNavigationBar: BottomAppBarCustom(active: 0,),
+      backgroundColor: const Color.fromRGBO(30, 53, 71, 1),
       body: SingleChildScrollView(
         child: Column(
           children: [
