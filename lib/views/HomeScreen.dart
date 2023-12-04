@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smarthome/components/BottomNav.dart';
 import 'package:smarthome/components/HomeDetail.dart';
 import 'package:smarthome/models/room.dart';
 
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return DefaultTabController(
       length: lstroom.length,
       child: Scaffold(
+        backgroundColor: const Color.fromRGBO(30, 53, 71, 1),
         appBar: AppBar(
           foregroundColor: Colors.white,
           backgroundColor: const Color.fromRGBO(30, 53, 71, 1.0),
@@ -50,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: TabBarView(
           children: lstroom.map((room) => HomeScreenDetail(rooms: room)).toList(),
+        ),
+        bottomNavigationBar: const BottomAppBarCustom(
+          active: 0,
         ),
       ),
     );

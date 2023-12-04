@@ -23,10 +23,9 @@ class MyApp extends StatelessWidget {
       ),
       home: HomeScreen(),
       // routes: {
-      //   '/home': (context) => SuaTaiKhoan(),
-      //   '/': (context) => QL_TaiKhoan(),
+      //   "/home": (context) => HomeScreen(),
+      //   "/profile": (context) => ProfileScreen(),
       // },
-      // initialRoute: '/',
     );
   }
 }

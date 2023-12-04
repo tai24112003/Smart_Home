@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smarthome/components/Account.dart';
+import 'package:smarthome/components/BottomNav.dart';
 import 'package:smarthome/components/UserInfo.dart';
 
 import 'DK_TaiKhoan.dart';
