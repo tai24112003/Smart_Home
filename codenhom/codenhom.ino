@@ -44,6 +44,9 @@ bool stt_led_p2 = LOW;
 bool stt_led_bep = LOW;
 
 
+int dosang=0;
+int dosang2 =0;
+
 bool stt_servo = false;
 unsigned long time_quay = 0;
 
@@ -89,7 +92,11 @@ void loop() {
     String value = receivedChar.substring(vt + 1);
     key.trim();
     value.trim();
+    
+    if(key == "led_ngu1") dosang = value.toInt();
     bool boolvalue;
+
+    analogWrite()
     boolvalue = value == "1";
     if (key.equals("led_san"))
       stt_led_san = boolvalue;
@@ -101,6 +108,11 @@ void loop() {
       stt_led_bep = boolvalue;
     else if (key.equals("servo")) 
       stt_servo = boolvalue;
+    else if(key.equals("led_ngu1"))
+      dosang = value.toInt();
+    else if(key.equals("led_ngu2"))
+      dosang2 = value.toInt();
+
     
   }
   system_lock = false; 
@@ -217,8 +229,8 @@ void loop() {
         myservo.write(90);
         time_quay = millis();
       }
-
-
+      analogWrite(led_p1,dosang);
+      analogWrite(led_p2,dosang2);
       if (digitalRead(btn_san_khach)) {
 
         if (stt_btn_san_khach == false) {
