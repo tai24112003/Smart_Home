@@ -1,162 +1,276 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:smarthome/components/AppBar.dart';
+import 'package:smarthome/components/BottomNav.dart';
+import 'package:smarthome/views/HomeScreen.dart';
+import 'AccountManage.dart';
+import 'DK_TaiKhoan.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool isChecked = true;
+class _LoginPageState extends State<LoginPage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   @override
-  Color getColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.focused,
-        MaterialState.hovered,
-        MaterialState.pressed
-      };
-      if (states.any(interactiveStates.contains)) {
-        return Colors.blue;
-      }
-      return Colors.white;
-    }
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('root/assets/img/backgroundlogin.jpg'),
-                fit: BoxFit.cover)),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: Container(
-                width: 450,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2.0),
-                    borderRadius: BorderRadius.circular(20.0),),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Sign In",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold),
+    return Scaffold(
+      appBar: AppBar(),
+      bottomNavigationBar: BottomAppBarCustom(
+        active: 0,
+      ),
+      backgroundColor: const Color.fromRGBO(30, 53, 71, 1),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 50),
+            Container(
+              width: 200,
+              height: 200,
+              child: Image.asset("root/assets/img/logo.jpg")
+            ),
+            SizedBox(height: 50),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.white, // Set text color to white
+                ),
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(156, 212, 255, 1), // Màu của border
+                      width: 2, // Độ dày của border
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: TextField(
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            'UserName',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(95, 232, 219, 219)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromARGB(95, 232, 219, 219),
-                                  width: 2.0)),
-                        ),
-                      ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(
+                          156, 212, 255, 1), // Màu của border khi được chọn
+                      width: 2, // Độ dày của border
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: TextField(
-                        style: TextStyle(color: Colors.white),
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.lock_person,
-                              color: Colors.white,
-                            ),
-                            label: Text(
-                              'Password',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 20.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(95, 232, 219, 219),
-                                    width: 2.0)),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(95, 232, 219, 219),
-                                    width: 2.0))),
-                      ),
-                    ),
-                    Padding(
-                      padding:const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: isChecked,
-                            fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                isChecked = value!;
-                              });
-                            },
-                            checkColor: Colors.greenAccent,
-                          ),
-                          const Text(
-                            'Remember me',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                                Colors.white.withOpacity(0.8)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30)))),
-                        onPressed: () => {
-                        },
-                        child: const Text(
-                          'Enter',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                    Padding(
-                      padding:const EdgeInsets.fromLTRB(0, 20,0, 10),
-                      child: InkWell(
-                          onTap: () {
-                             Navigator.pushNamed(context, '/ForgetScreen');
-                          },
-                          child: const Text(
-                            "Forget password",
-                            style: TextStyle(
-                                color: Colors.white,
-                                decoration: TextDecoration.underline),
-                          )),
-                    )
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            SizedBox(height: 20),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 20),
+            //   child: TextField(
+            //     obscureText: true,
+            //     decoration: InputDecoration(
+            //       labelText: 'Số điện thoại',
+            //       border: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(10),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                style: TextStyle(color: Colors.white),
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Mật khẩu',
+                  labelStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(156, 212, 255, 1), // Màu của border
+                      width: 2, // Độ dày của border
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: Color.fromRGBO(
+                          156, 212, 255, 1), // Màu của border khi được chọn
+                      width: 2, // Độ dày của border
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      loginWithEmailPassword(
+                          _usernameController.text, _passwordController.text);
+                      signIn(
+                          _usernameController.text, _passwordController.text);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromRGBO(77, 101, 125, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      minimumSize: Size(150, 50),
+                    ),
+                    child: Text(
+                      'Đăng Nhập',
+                      style: TextStyle(
+                        color: Color.fromRGBO(193, 228, 255, 1),
+                      ),
+                    ),
+                  ),
+                ]),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DkTaiKhoan()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Color.fromRGBO(77, 101, 125, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        minimumSize: Size(150, 50),
+                      ),
+                      child: Text(
+                        'Đăng kí',
+                        style: TextStyle(
+                          color: Color.fromRGBO(193, 228, 255, 1),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            )
+          ],
         ),
       ),
     );
+  }
+
+  void requestLogin(String email, String username) {
+    if (email != "thanhkiet.101023@gmail.com") {
+      // Gửi yêu cầu đăng nhập đến tài khoản "thanhkiet.1023@gmail.com"
+      final data = {
+        'email': email,
+        'username': username,
+      };
+
+      FirebaseFirestore.instance
+          .collection('login_requests')
+          .add(data)
+          .then((value) {
+        print('Yêu cầu đăng nhập đã được gửi thành công');
+      }).catchError((error) {
+        print('Lỗi khi gửi yêu cầu đăng nhập: $error');
+      });
+    } else {
+      // Đăng nhập thành công, chuyển tới trang chủ
+      loginWithEmailPassword(
+          _usernameController.text, _passwordController.text);
+      signIn(
+          _usernameController.text,
+          _passwordController
+              .text); // Hàm chuyển tới trang chủ, bạn cần thay thế tên hàm này bằng hàm thật của bạn
+    }
+  }
+
+  void sendNotification(
+      String receiverToken, String senderEmail, String senderUsername) {
+    // Gửi thông báo đến thiết bị của tài khoản khác
+    final notification = {
+      'title': 'Yêu cầu đăng nhập mới',
+      'body': 'Tài khoản $senderEmail muốn đăng nhập vào ứng dụng',
+    };
+
+    final data = {
+      'email': senderEmail,
+      'username': senderUsername,
+    };
+
+    final message = {
+      'token': receiverToken,
+      'notification': notification,
+      'data': data,
+    };
+
+    FirebaseFirestore.instance
+        .collection('notifications')
+        .add(message)
+        .then((value) {
+      print('Thông báo đã được gửi thành công');
+    }).catchError((error) {
+      print('Lỗi khi gửi thông báo: $error');
+    });
+  }
+
+  Future<void> loginWithEmailPassword(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Người dùng đã đăng nhập thành công
+      // Chuyển hướng đến trang chủ hoặc thực hiện các tác vụ liên quan
+     Navigator.pushReplacementNamed(context, '/home'); 
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Lỗi đăng nhập: $e');
+    }
+  }
+
+  void signIn(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      //_usernameController.text = "DNTC";
+      StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.data == null) {
+              return DkTaiKhoan();
+            } else
+              return QL_TaiKhoan();
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+      // Đăng nhập thành công
+    } catch (e) {
+      // Xử lý lỗi nếu có
+    }
   }
 }

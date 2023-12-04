@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:smarthome/models/room.dart';
+import 'package:smarthome/views/DetailRoomScreen.dart';
 
 class HomeScreenDetail extends StatefulWidget {
   const HomeScreenDetail({required this.rooms, Key? key}) : super(key: key);
@@ -71,7 +72,9 @@ class _HomeScreenDetailState extends State<HomeScreenDetail> {
               ],
             ),
             OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailRoomScreen(id: widget.rooms.id)));
+              },
               child: Text(
                 "Xem chi tiết",
                 style: TextStyle(color: Colors.white),
