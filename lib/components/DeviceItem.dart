@@ -85,55 +85,63 @@ class _DevicceItemState extends State<DevicceItem> {
             flex: 2,
             child: SizedBox(
               height: 100,
-              child:widget.device.type!="btn"? 
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  widget.device.id.contains("phongngu")
-                      ? Text(!status ? "Off" : "On",
+              child: widget.device.type != "btn"
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        !widget.device.id.contains("ngu")
+                            ? Text(!status ? "Off" : "On",
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange))
+                            : Text(_sliderValue.ceil().toString(),
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange)),
+                        !widget.device.id.contains("ngu")
+                            ? Switch(
+                                value: status,
+                                onChanged: (value) {
+                                  setState(() {
+                                    status = value;
+                                  });
+                                  _updateFirebaseStatus(
+                                      widget.device.id, status);
+                                },
+                              )
+                            : SizedBox(
+                                child: Slider(
+                                  min: 0,
+                                  max: 255,
+                                  value: _sliderValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _sliderValue = value;
+                                    });
+                                  },
+                                  onChangeEnd: (a) {
+                                    _updateFirebaseStatusI(
+                                        widget.device.id, a.round());
+                                  },
+                                ),
+                              ),
+                        Text(
+                          widget.device.id.toUpperCase(),
                           style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange))
-                      : Text(_sliderValue.ceil().toString(),
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange)),
-                  widget.device.id.contains("phongngu")
-                      ? Switch(
-                          value: status,
-                          onChanged: (value) {
-                            setState(() {
-                              status = value;
-                            });
-                            _updateFirebaseStatus(widget.device.id, status);
-                          },
-                        )
-                      : SizedBox(
-                          child: Slider(
-                            min: 0,
-                            max: 255,
-                            value: _sliderValue,
-                            onChanged: (a) {
-                              setState(() {
-                                _sliderValue = a;
-                              });
-                            },
-                            onChangeEnd: (a) {
-                              _updateFirebaseStatusI(
-                                  widget.device.id, a.round());
-                            },
-                          ),
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
-                  Text(
-                    widget.device.id.toUpperCase(),
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ):Center(child: Text(widget.device.description,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),textAlign: TextAlign.center,)),
+                      ],
+                    )
+                  : Center(
+                      child: Text(
+                      widget.device.description,
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    )),
             ),
           ),
         ],
@@ -143,13 +151,28 @@ class _DevicceItemState extends State<DevicceItem> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     _databaseReference.child(widget.device.id).onValue.listen((event) {
       var snapshot = event.snapshot;
       setState(() {
-        status = snapshot.value == true;
-        _sliderValue = double.parse(snapshot.value.toString());
+        // Ensure the value is not null before parsing
+        if (snapshot.value != null) {
+          try {
+            !widget.device.id.contains("ngu")
+                ? status = snapshot.value == true
+                : _sliderValue = double.parse(snapshot.value.toString());
+          } catch (e) {
+            print("Error parsing double: $e");
+            // Handle the error (e.g., set a default value)
+            _sliderValue =
+                0.0; // Set a default value or handle it according to your requirements
+          }
+        } else {
+          // Handle the case where the snapshot value is null
+          _sliderValue =
+              0.0; // Set a default value or handle it according to your requirements
+        }
       });
     });
   }

@@ -22,12 +22,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
         useMaterial3: true,
       ),
-      initialRoute: "/home",
-      home: HomeScreen(),
-      routes: {
-        "/home": (context) => HomeScreen(),
-        "/profile": (context) => ProfileScreen(),
-      },
+      // initialRoute: "/home",
+      home: DetailRoomScreen(id: 'san'),
+      // routes: {
+      //   "/home": (context) => HomeScreen(),
+      //   "/profile": (context) => ProfileScreen(),
+      // },
     );
   }
 }
