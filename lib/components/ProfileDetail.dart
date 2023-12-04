@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:smarthome/views/LoginScreen.dart';
 
 class ProfileDetail extends StatefulWidget {
   const ProfileDetail({super.key});
@@ -129,7 +130,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         child: Icon(Icons.directions_run_rounded,color:Colors.red),
                       ),
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoginPage()));
+                        },
                         child: Text(
                           "Đăng xuất",
                           style: TextStyle(color: Colors.white),

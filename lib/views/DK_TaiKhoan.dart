@@ -42,22 +42,14 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
           children: [
             SizedBox(height: 50),
             Container(
-              width: 200,
-              height: 200,
-              color: Colors.blue,
-              child: Text(
-                "LOGO",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50,
-                    color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
+                width: 200,
+                height: 200,
+                child: Image.asset("root/assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                style: TextStyle(color: Colors.white),
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -86,6 +78,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                style: TextStyle(color: Colors.white),
                 controller: _displayName,
                 decoration: InputDecoration(
                   labelText: 'DisplayName',
@@ -114,6 +107,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                style: TextStyle(color: Colors.white),
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -143,6 +137,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                style: TextStyle(color: Colors.white),
                 controller: _rePasword,
                 obscureText: true,
                 decoration: InputDecoration(
@@ -176,11 +171,8 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 //     0) {
                 registerWithEmailPassword(_usernameController.text,
                     _passwordController.text, _displayName.text);
-                signUp(_usernameController.text, _passwordController.text);
-                saveAccountInfo(
-                    _usernameController.text, _passwordController.text);
-                saveCredentials(
-                    _usernameController.text, _passwordController.text);
+                // signUp(_usernameController.text, _passwordController.text);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
@@ -232,7 +224,10 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
         'email': email,
         'displayName': displayName,
       });
-
+//                     saveAccountInfo(
+//                     _usernameController.text, _passwordController.text);
+//                 saveCredentials(
+//                     _usernameController.text, _passwordController.text);
       // Người dùng đã được đăng ký thành công và thông tin đã được lưu vào Firestore
     } catch (e) {
       // Xử lý lỗi nếu có

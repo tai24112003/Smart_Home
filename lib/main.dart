@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/firebase_options.dart';
-import 'package:smarthome/views/AccountManage.dart';
 import './views/LoginScreen.dart';
 
 void main() async {

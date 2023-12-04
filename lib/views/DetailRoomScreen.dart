@@ -59,6 +59,10 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   Widget build(BuildContext context) {
     print(rooms?.devices);
     return Scaffold(
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Color.fromRGBO(30, 53, 71, 1), 
+      ),
       body: SingleChildScrollView(
         child: Container(
           color: Color.fromRGBO(30, 53, 71, 1),

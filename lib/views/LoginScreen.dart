@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  String messageLogin = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,27 +26,21 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             SizedBox(height: 50),
             Container(
-              width: 200,
-              height: 200,
-              color: Colors.blue,
-              child: Text(
-                "LOGO",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50,
-                    color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
+                width: 200,
+                height: 200,
+                child: Image.asset("root/assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                style: TextStyle(
+                  color: Colors.white, // Set text color to white
+                ),
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   labelStyle: TextStyle(
-                    color: Color.fromRGBO(96, 130, 157, 1),
+                    color: Colors.white,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -82,12 +77,13 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                style: TextStyle(color: Colors.white),
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Mật khẩu',
                   labelStyle: TextStyle(
-                    color: Color.fromRGBO(96, 130, 157, 1),
+                    color: Colors.white,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -106,6 +102,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+            ),
+            SizedBox(height: 50),
+            Text(
+              messageLogin,
+              style: TextStyle(color: Colors.white),
             ),
             SizedBox(height: 50),
             Row(
@@ -233,13 +234,11 @@ class _LoginPageState extends State<LoginPage> {
       );
       // Người dùng đã đăng nhập thành công
       // Chuyển hướng đến trang chủ hoặc thực hiện các tác vụ liên quan
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => QL_TaiKhoan()),
-      );
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      // Xử lý lỗi nếu có
-      print('Lỗi đăng nhập: $e');
+      setState(() {
+        messageLogin = "Đăng nhập không thành công";
+      });
     }
   }
 

@@ -38,7 +38,17 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           foregroundColor: Colors.white,
           backgroundColor: const Color.fromRGBO(30, 53, 71, 1.0),
-          title: const Text('Welcome Home'),
+          title: Row(
+            children: [
+              Image.asset(
+                'root/assets/img/logo.jpg', 
+                height: 60,
+                width: 60, 
+              ),
+              const SizedBox(width: 10), 
+              const Text('Welcome Home',style: TextStyle(fontWeight: FontWeight.bold),),
+            ],
+          ),
           bottom: TabBar(
             dividerColor: Colors.transparent,
             indicatorSize: TabBarIndicatorSize.tab,
