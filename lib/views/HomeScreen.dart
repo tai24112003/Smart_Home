@@ -9,19 +9,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List lstroom= List.filled(0, Room(id: '', name: '', devices: List.filled(0, Device(id: '', type: '', description: ''))));
-  _loadata(){
+  List lstroom = List.filled(
+      0,
+      Room(
+          id: '',
+          name: '',
+          devices: List.filled(0, Device(id: '', type: '', description: '')),
+          img: ''));
+  _loadata() {
     Room.getData().then((value) {
-        setState(() {
-          lstroom=Room.rooms;
-        });
+      setState(() {
+        lstroom = Room.rooms;
+      });
     });
   }
+
   @override
   void initState() {
     super.initState();
     _loadata();
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -32,26 +40,24 @@ class _HomeScreenState extends State<HomeScreen> {
           foregroundColor: Colors.white,
           backgroundColor: const Color.fromRGBO(30, 53, 71, 1.0),
           title: const Text('Welcome Home'),
-          bottom: TabBar( 
+          bottom: TabBar(
             dividerColor: Colors.transparent,
-           indicatorSize:TabBarIndicatorSize.tab ,
+            indicatorSize: TabBarIndicatorSize.tab,
             labelPadding: EdgeInsets.fromLTRB(50, 0, 50, 0),
             isScrollable: true,
-            unselectedLabelColor:const Color.fromRGBO(77, 101, 125, 1.0),
+            unselectedLabelColor: const Color.fromRGBO(77, 101, 125, 1.0),
             labelColor: Colors.white,
             splashBorderRadius: BorderRadius.circular(50),
             indicator: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-              color:Color.fromRGBO(26, 42, 57, 1),
-              borderRadius: BorderRadius.circular(50)
-              
-            ),
+                border: Border.all(color: Colors.blue),
+                color: Color.fromRGBO(26, 42, 57, 1),
+                borderRadius: BorderRadius.circular(50)),
             tabs: lstroom.map((room) => Tab(text: room.name)).toList(),
-            
           ),
         ),
         body: TabBarView(
-          children: lstroom.map((room) => HomeScreenDetail(rooms: room)).toList(),
+          children:
+              lstroom.map((room) => HomeScreenDetail(rooms: room)).toList(),
         ),
         bottomNavigationBar: const BottomAppBarCustom(
           active: 0,

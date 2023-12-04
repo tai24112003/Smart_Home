@@ -17,15 +17,24 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   List<Device> led = [];
   List<Device> motor = [];
   List<Device> btn = [];
+  List<Device> lcd=[];
   void _loadData() {
     Room.getData().then((value) {
       setState(() {
         // Filter the room based on the condition
         rooms = Room.rooms.firstWhere((element) => element.id == "san",
-            orElse: () => Room(id: "", name: "", devices: []));
+            orElse: () => Room(id: "", name: "",img: "", devices: []));
 
         // Check if the room was found before accessing its devices
         if (rooms != null) {
+          lcd= rooms!.devices
+              .where((e) => e.type == "screen")
+              .map((e) => Device(
+                    id: e.id,
+                    type: e.type,
+                    description: e.description,
+                  ))
+              .toList();
           led = rooms!.devices
               .where((e) => e.type == "led")
               .map((e) => Device(
@@ -103,6 +112,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       BuildItem(list: led),
                       BuildItem(list: motor),
                       BuildItem(list: btn),
+                      BuildItem(list: lcd)
                     ],
                   ),
                 )

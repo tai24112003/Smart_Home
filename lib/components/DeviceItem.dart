@@ -47,6 +47,8 @@ class _DevicceItemState extends State<DevicceItem> {
       case "btn":
         iconW = Icons.radio_button_checked;
         break;
+      case "screen":
+        iconW = Icons.screenshot_monitor_rounded;
     }
     return Container(
       height: 125,
@@ -89,6 +91,7 @@ class _DevicceItemState extends State<DevicceItem> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        widget.device.type.contains("screen")? Text(""):
                         !widget.device.id.contains("ngu")
                             ? Text(!status ? "Off" : "On",
                                 style: const TextStyle(
@@ -100,7 +103,13 @@ class _DevicceItemState extends State<DevicceItem> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.orange)),
-                        !widget.device.id.contains("ngu")
+                        widget.device.type.contains("screen")
+                            ?Text(
+                          widget.device.description,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ): !widget.device.id.contains("ngu")
                             ? Switch(
                                 value: status,
                                 onChanged: (value) {

@@ -64,6 +64,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - data/room.json
+      - assets/img/logo.jpg
+      - assets/img/myliv.jpg
+      - assets/img/nhatam.jpg
+      - assets/img/phongngu.jpg
+      - assets/img/san.jpg
+      - assets/img/hl.jpg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

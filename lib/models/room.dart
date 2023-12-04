@@ -26,11 +26,13 @@ class Room {
   final String id;
   final String name;
   final List<Device> devices;
+  final String img;
 
   Room({
     required this.id,
     required this.name,
     required this.devices,
+    required this.img
   });
 
   factory Room.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class Room {
         id: json['id'],
         name: json['name'],
         devices: devices,
+        img:json['img']
       );
     } catch (e) {
       print("Lỗi khi ánh xạ JSON: $e");

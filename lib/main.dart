@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: DetailRoomScreen(id: 'khach'),
       // routes: {
       //   "/home": (context) => HomeScreen(),
       //   "/profile": (context) => ProfileScreen(),

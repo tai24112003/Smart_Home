@@ -103,12 +103,12 @@ void loop() {
       stt_servo = boolvalue;
     
   }
-  system_lock = false;
+  system_lock = false; 
   switch (system_lock) {
     case true:
       // Serial.print(digitalRead(btn_toilet));
       lcd.setCursor(0, 0);
-      lcd.print("Khoa He Thong");
+      lcd.print("Khoa He Thong")
       if (btn_cur_stt == 1) {
 
         if (t_high == 0)
