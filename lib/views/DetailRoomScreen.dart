@@ -5,7 +5,7 @@ import 'package:smarthome/components/DeviceItem.dart';
 import 'package:smarthome/models/room.dart';
 
 class DetailRoomScreen extends StatefulWidget {
-  
+
   const DetailRoomScreen({super.key, required this.id});
   final id;
   @override
