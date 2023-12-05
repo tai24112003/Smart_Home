@@ -21,7 +21,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     Room.getData().then((value) {
       setState(() {
         // Filter the room based on the condition
-        rooms = Room.rooms.firstWhere((element) => element.id == "san",
+        rooms = Room.rooms.firstWhere((element) => element.id == "phongngu1",
             orElse: () => Room(id: "", name: "", devices: []));
 
         // Check if the room was found before accessing its devices
