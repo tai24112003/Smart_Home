@@ -36,6 +36,7 @@ class _HomeScreenDetailState extends State<HomeScreenDetail> {
                 ],
                 border: Border.all(color: Colors.blue, width: 2.0),
               ),
+              child: Image.asset("assets/img/${widget.rooms.img}",fit: BoxFit.cover,),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

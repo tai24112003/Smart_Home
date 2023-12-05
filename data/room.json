@@ -5,8 +5,10 @@
         "devices":[
             {"id":"led_khach", "type":"led"},
             {"id":"btn_khach", "type":"btn","description":"Bật đèn phòng khách"},
-            {"id":"arduino", "type":"board"}
-        ]
+            {"id":"arduino", "type":"board"},
+            {"id":"lcd_khach","type":"screen","description":"Menu"}
+        ],
+        "img":"myliv.jpg"
     },
     {
         "id": "san",
@@ -17,7 +19,8 @@
             {"id":"lcd_san", "type":"screen", "description":"Hiển thị mật khẩu và thông tin các thiết bị"},
             {"id":"sensor_rain", "type":"sensor", "description":"Cảm biến mưa để điều khiển rèm"},
             {"id":"servo", "type":"servo","description":"Điều khiển rèm che"}
-        ]
+        ],
+        "img":"san.jpg"
     },
     {
         "id": "phongngu1",
@@ -25,7 +28,8 @@
         "devices":[
             {"id":"led_ngu1", "type":"led"},
             {"id":"btn_ngu1", "type":"btn", "description":"Bật đèn phòng ngủ"}
-        ]
+        ],
+        "img":"phongngu.jpg"
     },
     {
         "id": "phongngu2",
@@ -33,7 +37,8 @@
         "devices":[
             {"id":"led_ngu2", "type":"led"},
             {"id":"btn_ngu2", "type":"btn", "description":"Bật đèn phòng ngủ"}
-        ]
+        ],
+        "img":"phongngu.jpg"
     },
     {
         "id": "hanhlang",
@@ -41,7 +46,8 @@
         "devices":[
             {"id":"led_hanhlang", "type":"led"},
             {"id":"btn_hanhlang", "type":"btn", "description":"Bật đèn hành lang và bếp"}
-        ]
+        ],
+        "img":"hl.jpg"
     },
     {
         "id": "bep",
@@ -49,7 +55,8 @@
         "devices":[
             {"id":"led_bep", "type":"led"},
             {"id":"sensor_smoke", "type":"sensor", "description":"Cảm biến khói để bật cảnh báo"}
-        ]
+        ],
+        "img":"bep.jpg"
     },
     {
         "id": "toilet",
@@ -58,6 +65,7 @@
             {"id":"led_vs", "type":"led"},
             {"id":"btn_vs", "type":"btn", "description":"Nút bật đèn vệ sinh"},
             {"id":"sensor_light", "type":"sensor", "description":"Cảm biến ánh sáng để tự động dội nước"}
-        ]
+        ],
+        "img":"toilet.jpg"
     }
 ]

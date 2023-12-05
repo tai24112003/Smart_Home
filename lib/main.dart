@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/firebase_options.dart';
 import './views/LoginScreen.dart';
+import 'package:smarthome/views/DetailRoomScreen.dart';
+import 'package:smarthome/views/HomeScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      home: DetailRoomScreen(id: 1),
       // routes: {
       //   "/home": (context) => HomeScreen(),
       //   "/profile": (context) => ProfileScreen(),

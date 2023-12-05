@@ -14,7 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Room(
           id: '',
           name: '',
-          devices: List.filled(0, Device(id: '', type: '', description: ''))));
+          devices: List.filled(0, Device(id: '', type: '', description: '')),
+          img: ''));
   _loadata() {
     Room.getData().then((value) {
       setState(() {

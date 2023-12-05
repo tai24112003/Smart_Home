@@ -89,7 +89,7 @@ class _DevicceItemState extends State<DevicceItem> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        widget.device.id.contains("phongngu")
+                        !widget.device.id.contains("ngu")
                             ? Text(!status ? "Off" : "On",
                                 style: const TextStyle(
                                     fontSize: 18,
@@ -100,7 +100,7 @@ class _DevicceItemState extends State<DevicceItem> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.orange)),
-                        widget.device.id.contains("phongngu")
+                        !widget.device.id.contains("ngu")
                             ? Switch(
                                 value: status,
                                 onChanged: (value) {
@@ -116,9 +116,9 @@ class _DevicceItemState extends State<DevicceItem> {
                                   min: 0,
                                   max: 255,
                                   value: _sliderValue,
-                                  onChanged: (a) {
+                                  onChanged: (value) {
                                     setState(() {
-                                      _sliderValue = a;
+                                      _sliderValue = value;
                                     });
                                   },
                                   onChangeEnd: (a) {
@@ -151,13 +151,28 @@ class _DevicceItemState extends State<DevicceItem> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     _databaseReference.child(widget.device.id).onValue.listen((event) {
       var snapshot = event.snapshot;
       setState(() {
-        status = snapshot.value == true;
-        _sliderValue = double.parse(snapshot.value.toString());
+        // Ensure the value is not null before parsing
+        if (snapshot.value != null) {
+          try {
+            !widget.device.id.contains("ngu")
+                ? status = snapshot.value == true
+                : _sliderValue = double.parse(snapshot.value.toString());
+          } catch (e) {
+            print("Error parsing double: $e");
+            // Handle the error (e.g., set a default value)
+            _sliderValue =
+                0.0; // Set a default value or handle it according to your requirements
+          }
+        } else {
+          // Handle the case where the snapshot value is null
+          _sliderValue =
+              0.0; // Set a default value or handle it according to your requirements
+        }
       });
     });
   }

@@ -26,12 +26,13 @@ class Room {
   final String id;
   final String name;
   final List<Device> devices;
+  final String img;
 
-  Room({
-    required this.id,
-    required this.name,
-    required this.devices,
-  });
+  Room(
+      {required this.id,
+      required this.name,
+      required this.devices,
+      required this.img});
 
   factory Room.fromJson(Map<String, dynamic> json) {
     try {
@@ -40,10 +41,10 @@ class Room {
           devicesList.map((device) => Device.fromJson(device)).toList();
 
       return Room(
-        id: json['id'],
-        name: json['name'],
-        devices: devices,
-      );
+          id: json['id'],
+          name: json['name'],
+          devices: devices,
+          img: json['img']);
     } catch (e) {
       print("Lỗi khi ánh xạ JSON: $e");
       rethrow;
