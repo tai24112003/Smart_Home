@@ -47,7 +47,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
             Container(
                 width: 200,
                 height: 200,
-                child: Image.asset("root/assets/img/logo.jpg")),
+                child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -180,10 +180,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                       _passwordController.text, _displayName.text);
                   // signUp(_usernameController.text, _passwordController.text);
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
+                  Navigator.pushReplacementNamed(context, '/');
                 } else
                   _noti.text = "Mật khẩu không trùng khớp";
 

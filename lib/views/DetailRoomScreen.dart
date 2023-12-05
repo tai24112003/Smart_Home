@@ -5,7 +5,6 @@ import 'package:smarthome/components/DeviceItem.dart';
 import 'package:smarthome/models/room.dart';
 
 class DetailRoomScreen extends StatefulWidget {
-
   const DetailRoomScreen({super.key, required this.id});
   final id;
   @override
@@ -23,7 +22,8 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     Room.getData().then((value) {
       setState(() {
         // Filter the room based on the condition
-        rooms = Room.rooms.firstWhere((element) => element.id == "phongngu1",
+        rooms = Room.rooms.firstWhere(
+            (element) => element.id == widget.id.toString(),
             orElse: () => Room(id: "", name: "", img: "", devices: []));
 
         // Check if the room was found before accessing its devices

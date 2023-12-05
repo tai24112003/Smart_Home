@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
                 width: 200,
                 height: 200,
-                child: Image.asset("root/assets/img/logo.jpg")),
+                child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -135,10 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => DkTaiKhoan()),
-                        );
+                        Navigator.pushReplacementNamed(context, '/dangki');
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Color.fromRGBO(77, 101, 125, 1),

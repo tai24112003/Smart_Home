@@ -130,7 +130,8 @@ class _DevicceItemState extends State<DevicceItem> {
                         Text(
                           widget.device.id.toUpperCase(),
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                          maxLines: 1,
                           textAlign: TextAlign.center,
                         ),
                       ],

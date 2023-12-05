@@ -42,10 +42,11 @@ class Room {
           devicesList.map((device) => Device.fromJson(device)).toList();
 
       return Room(
-          id: json['id'],
-          name: json['name'],
-          devices: devices,
-          img: json['img']);
+        id: json['id'],
+        name: json['name'],
+        devices: devices,
+        img: json['img'] ?? '', // Thêm kiểm tra null ở đây
+      );
     } catch (e) {
       print("Lỗi khi ánh xạ JSON: $e");
       rethrow;
