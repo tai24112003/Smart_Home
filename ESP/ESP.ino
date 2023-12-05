@@ -19,6 +19,7 @@ bool stt_led_p1 = false;
 bool stt_led_p2 = false;
 bool stt_led_bep = false;
 bool stt_servo = false;
+bool system_lock = false;
 int stt_ngu1 = 0;
 
 void setup() {
@@ -82,6 +83,13 @@ void loop() {
     if (stt_ngu1 != servo)
       Serial.println("led_ngu1: " + String(servo));
     stt_ngu1 = servo;
+    // Gửi dữ liệu về ATmega328P qua UART
+  }
+  if (Firebase.getInt(firebaseData, "/system_lock")) {
+    int servo = firebaseData.intData();
+    if (system_lock != servo)
+      Serial.println("system_lock: " + String(servo));
+    system_lock = servo;
     // Gửi dữ liệu về ATmega328P qua UART
   }
 

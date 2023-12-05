@@ -94,6 +94,8 @@ void loop() {
     receivedChar = Serial.readString();
     // Xử lý dữ liệu từ ESP8266 (ví dụ: in ra Serial Monitor)
     int vt = receivedChar.indexOf(":");
+          Serial.println("systemlock:0");
+
     String key = receivedChar.substring(0, vt);
     String value = receivedChar.substring(vt + 1);
     key.trim();
@@ -117,8 +119,9 @@ void loop() {
       dosang = value.toInt();
     else if (key.equals("led_ngu2"))
       dosang2 = value.toInt();
+      else if (key.equals("system_lock"))
+      system_lock = boolvalue;
   }
-  system_lock = false;
   switch (system_lock) {
     case true:
       // Serial.print(digitalRead(btn_toilet));
@@ -172,9 +175,10 @@ void loop() {
       if (pass_in.length() == pass.length()) {
         if (pass == pass_in) {
           pass_in = "";
-          //          Serial.println("Voo he thong nha ni");
+          
           time_open = millis();
           system_lock = false;
+          Serial.println("systemlock:0");
         } else {
           lcd.setCursor(0, 1);
           lcd.print("Sai MK");
@@ -419,6 +423,7 @@ void loop() {
           t_high = 0;
           t_low = 0;
           system_lock = true;
+          Serial.println("systemlock:1");
           pass_in = "";
           pass_wrong = 0;
           col = 0;
@@ -450,7 +455,9 @@ void loop() {
               t_low = 0;
               col = 0;
               
+              
               system_lock = true;
+              Serial.println("systemlock:1");
               stt_pot_p1=false;
               stt_pot_p2=false;
               pass_in = "";
