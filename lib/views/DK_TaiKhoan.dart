@@ -176,9 +176,9 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 if (_passwordController.text
                         .compareTo(_passwordController.text) ==
                     0) {
-                  registerWithEmailPassword(_usernameController.text,
+                  registerWithEmailPassword(_usernameController.text.trim(),
                       _passwordController.text, _displayName.text);
-                  signUp(_usernameController.text, _passwordController.text);
+                  // signUp(_usernameController.text, _passwordController.text);
 
                   Navigator.push(
                     context,
