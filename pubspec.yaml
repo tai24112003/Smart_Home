@@ -75,8 +75,7 @@ flutter:
       - assets/img/san.jpg
       - assets/img/hl.jpg
   #   - images/a_dot_burr.jpeg
-      - root/assets/img/logo.jpg
-  #   - images/a_dot_ham.jpeg
+      - assets/img/baochay.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
