@@ -59,10 +59,8 @@ class _BottomAppBarCustomState extends State<BottomAppBarCustom> {
     _databaseReference.child('baodong').onValue.listen((event) {
       var snapshot = event.snapshot;
       if (snapshot.value == true) {
-        print('hhhh');
         _showCustomDialog(context);
       }
-     
     });
   }
 
@@ -73,27 +71,40 @@ class _BottomAppBarCustomState extends State<BottomAppBarCustom> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.red,
-          title: Center(child: Text("Khẩn Cấp",style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold,fontSize: 25),)),
+          title: Center(
+              child: Text(
+            "Khẩn Cấp",
+            style: TextStyle(
+                color: Colors.yellow,
+                fontWeight: FontWeight.bold,
+                fontSize: 25),
+          )),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-             const Text("Tới công chuyện rồi thí chủ ơi!!! Cháy nhà",
-              softWrap:true,style: TextStyle(color: Colors.yellow,fontWeight: FontWeight.bold,fontSize: 16)),
+              const Text("Tới công chuyện rồi thí chủ ơi!!! Cháy nhà",
+                  softWrap: true,
+                  style: TextStyle(
+                      color: Colors.yellow,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16)),
               Image.asset("root/assets/img/baochay.jpg")
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                _databaseReference.child('baodong').once().then((event){
+                _databaseReference.child('baodong').once().then((event) {
                   var snapshot = event.snapshot;
-              if (snapshot.value == false) {
-                  Navigator.of(context).pop();
-                  print('object');
-                }
+                  if (snapshot.value == false) {
+                    Navigator.of(context).pop();
+                  }
                 });
               },
-              child: Text("Đóng",style: TextStyle(color: Colors.white),),
+              child: Text(
+                "Đóng",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
