@@ -6,12 +6,9 @@ import 'package:smarthome/views/HomeScreen.dart';
 import 'package:smarthome/views/ProfileScreen.dart';
 import 'package:smarthome/views/ProfileScreen.dart';
 import './views/LoginScreen.dart';
-<<<<<<< HEAD
 import 'package:smarthome/views/DetailRoomScreen.dart';
 import 'package:smarthome/views/HomeScreen.dart';
-=======
 import 'package:firebase_messaging/firebase_messaging.dart';
->>>>>>> origin/kiet
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
