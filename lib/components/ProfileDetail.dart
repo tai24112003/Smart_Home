@@ -2,27 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:smarthome/views/LoginScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 
 class ProfileDetail extends StatefulWidget {
   const ProfileDetail({super.key});
-
+  @override
   @override
   State<ProfileDetail> createState() => _ProfileDetailState();
 }
 
 class _ProfileDetailState extends State<ProfileDetail> {
+  int _currentIndex = 0;
+  late Stream<QuerySnapshot> _accountsStream;
+  late User _currentUser;
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+
+    _accountsStream =
+        FirebaseFirestore.instance.collection('accounts').snapshots();
+  }
+
+  Future<void> _getCurrentUser() async {
+    User? user = await FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
+    ;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         color: Color.fromRGBO(30, 53, 71, 1.0),
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height*0.9                           ,
+        height: MediaQuery.of(context).size.height * 0.9,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.min,
           children: [
-            
             PhysicalModel(
               elevation: 8.0,
               color: const Color.fromRGBO(26, 42, 57, 1.0),
@@ -40,33 +64,25 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: 100,
-                            height: 100,
-                            child: Icon(Icons.account_box_rounded,size: 125,color: Colors.white,)
-                          ),
+                              width: 100,
+                              height: 100,
+                              child: Icon(
+                                Icons.account_box_rounded,
+                                size: 125,
+                                color: Colors.white,
+                              )),
                         ],
                       ),
                       Expanded(
-                        flex:1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
+                        flex: 1,
+                        child: IndexedStack(
+                          index: _currentIndex,
+                          children: [
                             Text(
-                              "User: Quandang377",
-                              style: TextStyle(color: Colors.white, fontSize: 14),
+                              'Tên: ${_currentUser.displayName}',
+                              style: TextStyle(color: Colors.white),
                             ),
-                            Text(
-                              "Nickname: Quanproz",
-                              style: TextStyle(color: Colors.white, fontSize: 14),
-                            ),
-                            Text(
-                              "Class: Member",
-                              style: TextStyle(color: Colors.white, fontSize: 14),
-                            ),
-                            Text(
-                              "IDUser: #000001",
-                              style: TextStyle(color: Colors.white, fontSize: 14),
-                            ),
+                            Text('Email: ${_currentUser.email}'),
                           ],
                         ),
                       )
@@ -76,7 +92,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.3,
+              height: MediaQuery.of(context).size.height * 0.3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -84,8 +100,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Padding(
-                        padding:  EdgeInsets.all(8.0),
-                        child: Icon(Icons.assignment_sharp,color:Colors.white),
+                        padding: EdgeInsets.all(8.0),
+                        child:
+                            Icon(Icons.assignment_sharp, color: Colors.white),
                       ),
                       OutlinedButton(
                         onPressed: () {},
@@ -94,10 +111,13 @@ class _ProfileDetailState extends State<ProfileDetail> {
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ButtonStyle(
-                            fixedSize: MaterialStatePropertyAll(Size.fromWidth(MediaQuery.of(context).size.width*0.4)),
+                            fixedSize: MaterialStatePropertyAll(Size.fromWidth(
+                                MediaQuery.of(context).size.width * 0.4)),
                             shape: MaterialStatePropertyAll(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                            backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(5 , 40, 75, 1.0))),
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15))),
+                            backgroundColor: MaterialStatePropertyAll(
+                                Color.fromRGBO(5, 40, 75, 1.0))),
                       ),
                     ],
                   ),
@@ -106,7 +126,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.assignment_ind_rounded,color:Colors.white),
+                        child: Icon(Icons.assignment_ind_rounded,
+                            color: Colors.white),
                       ),
                       OutlinedButton(
                         onPressed: () {},
@@ -115,10 +136,13 @@ class _ProfileDetailState extends State<ProfileDetail> {
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ButtonStyle(
-                            fixedSize: MaterialStatePropertyAll(Size.fromWidth(MediaQuery.of(context).size.width*0.4)),
+                            fixedSize: MaterialStatePropertyAll(Size.fromWidth(
+                                MediaQuery.of(context).size.width * 0.4)),
                             shape: MaterialStatePropertyAll(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                            backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(5 , 40, 75, 1.0))),
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15))),
+                            backgroundColor: MaterialStatePropertyAll(
+                                Color.fromRGBO(5, 40, 75, 1.0))),
                       ),
                     ],
                   ),
@@ -127,21 +151,28 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.directions_run_rounded,color:Colors.red),
+                        child: Icon(Icons.directions_run_rounded,
+                            color: Colors.red),
                       ),
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoginPage()));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
                         },
                         child: Text(
                           "Đăng xuất",
                           style: TextStyle(color: Colors.white),
                         ),
                         style: ButtonStyle(
-                            fixedSize: MaterialStatePropertyAll(Size.fromWidth(MediaQuery.of(context).size.width*0.4)),
+                            fixedSize: MaterialStatePropertyAll(Size.fromWidth(
+                                MediaQuery.of(context).size.width * 0.4)),
                             shape: MaterialStatePropertyAll(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                            backgroundColor: MaterialStatePropertyAll(Colors.red)),
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15))),
+                            backgroundColor:
+                                MaterialStatePropertyAll(Colors.red)),
                       ),
                     ],
                   ),

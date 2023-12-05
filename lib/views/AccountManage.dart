@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class QL_TaiKhoan extends StatefulWidget {
   const QL_TaiKhoan({super.key});
@@ -168,7 +167,7 @@ class _QL_TaiKhoanState extends State<QL_TaiKhoan> {
                             icon: Icon(Icons.delete),
                             color: Colors.white,
                             onPressed: () {
-                              deleteUser(userId);
+                              deleteUser(email);
                             },
                           )),
                     );
@@ -222,6 +221,36 @@ class _QL_TaiKhoanState extends State<QL_TaiKhoan> {
     );
   }
 
+  void deleteUser(String email) async {
+    try {
+      // Lấy thông tin người dùng dựa trên email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Lấy ID của người dùng
+        String userId = querySnapshot.docs.first.id;
+
+        // Xóa người dùng khỏi Firebase Authentication
+        await FirebaseAuth.instance.currentUser?.delete();
+
+        // Xóa người dùng khỏi Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .delete();
+
+        print('Người dùng đã bị xóa');
+      } else {
+        print('Không tìm thấy người dùng với email $email');
+      }
+    } catch (e) {
+      print('Lỗi xóa người dùng: $e');
+    }
+  }
+
   String getUserDisplayName(String userId) {
     String displayName = '';
     FirebaseFirestore.instance
@@ -236,17 +265,17 @@ class _QL_TaiKhoanState extends State<QL_TaiKhoan> {
     return displayName;
   }
 
-  void deleteUser(String userId) {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .delete()
-        .then((value) {
-      print('Người dùng đã bị xóa');
-    }).catchError((error) {
-      print('Lỗi xóa người dùng: $error');
-    });
-  }
+  // void deleteUser(String userId) {
+  //   FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(userId)
+  //       .delete()
+  //       .then((value) {
+  //     print('Người dùng đã bị xóa');
+  //   }).catchError((error) {
+  //     print('Lỗi xóa người dùng: $error');
+  //   });
+  // }
 
   // void _configureFirebaseMessaging() {
   //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {

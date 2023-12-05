@@ -10,6 +10,7 @@ class DkTaiKhoan extends StatefulWidget {
 }
 
 class _DkTaiKhoanState extends State<DkTaiKhoan> {
+  late TextEditingController _noti;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   late TextEditingController _rePasword;
@@ -17,6 +18,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
   @override
   void initState() {
     super.initState();
+    _noti = TextEditingController();
     _rePasword = TextEditingController();
     _usernameController = TextEditingController();
     _displayName = TextEditingController();
@@ -25,6 +27,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
 
   @override
   void dispose() {
+    _noti.dispose();
     _rePasword.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
@@ -74,7 +77,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 ),
               ),
             ),
-            SizedBox(height: 50),
+            SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -163,22 +166,26 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 ),
               ),
             ),
+            Text(
+              _noti.text,
+              style: TextStyle(color: Colors.red),
+            ),
             SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
-                // if (_passwordController.text
-                //         .compareTo(_passwordController.text) ==
-                //     0) {
-                registerWithEmailPassword(_usernameController.text,
-                    _passwordController.text, _displayName.text);
-                // signUp(_usernameController.text, _passwordController.text);
+                if (_passwordController.text
+                        .compareTo(_passwordController.text) ==
+                    0) {
+                  registerWithEmailPassword(_usernameController.text.trim(),
+                      _passwordController.text, _displayName.text);
+                  // signUp(_usernameController.text, _passwordController.text);
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-                // } else
-                //   _rePasword.text = "Mật khẩu không chính xác";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                } else
+                  _noti.text = "Mật khẩu không trùng khớp";
 
                 // Xử lý khi nút được nhấn
               },
