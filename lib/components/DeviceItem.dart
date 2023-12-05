@@ -104,9 +104,10 @@ class _DevicceItemState extends State<DevicceItem> {
                             ? Switch(
                                 value: status,
                                 onChanged: (value) {
-                                  setState(() {
-                                    status = value;
-                                  });
+                                  if (mounted)
+                                    setState(() {
+                                      status = value;
+                                    });
                                   _updateFirebaseStatus(
                                       widget.device.id, status);
                                 },
@@ -117,9 +118,10 @@ class _DevicceItemState extends State<DevicceItem> {
                                   max: 255,
                                   value: _sliderValue,
                                   onChanged: (value) {
-                                    setState(() {
-                                      _sliderValue = value;
-                                    });
+                                    if (mounted)
+                                      setState(() {
+                                        _sliderValue = value;
+                                      });
                                   },
                                   onChangeEnd: (a) {
                                     _updateFirebaseStatusI(
@@ -156,25 +158,26 @@ class _DevicceItemState extends State<DevicceItem> {
 
     _databaseReference.child(widget.device.id).onValue.listen((event) {
       var snapshot = event.snapshot;
-      setState(() {
-        // Ensure the value is not null before parsing
-        if (snapshot.value != null) {
-          try {
-            !widget.device.id.contains("ngu")
-                ? status = snapshot.value == true
-                : _sliderValue = double.parse(snapshot.value.toString());
-          } catch (e) {
-            print("Error parsing double: $e");
-            // Handle the error (e.g., set a default value)
+      if (mounted)
+        setState(() {
+          // Ensure the value is not null before parsing
+          if (snapshot.value != null) {
+            try {
+              !widget.device.id.contains("ngu")
+                  ? status = snapshot.value == true
+                  : _sliderValue = double.parse(snapshot.value.toString());
+            } catch (e) {
+              print("Error parsing double: $e");
+              // Handle the error (e.g., set a default value)
+              _sliderValue =
+                  0.0; // Set a default value or handle it according to your requirements
+            }
+          } else {
+            // Handle the case where the snapshot value is null
             _sliderValue =
                 0.0; // Set a default value or handle it according to your requirements
           }
-        } else {
-          // Handle the case where the snapshot value is null
-          _sliderValue =
-              0.0; // Set a default value or handle it according to your requirements
-        }
-      });
+        });
     });
   }
 }
