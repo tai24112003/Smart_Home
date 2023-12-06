@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/models/room.dart';
@@ -47,6 +45,8 @@ class _DevicceItemState extends State<DevicceItem> {
       case "btn":
         iconW = Icons.radio_button_checked;
         break;
+      case "screen":
+        iconW = Icons.screenshot_monitor_rounded;
     }
     return Container(
       height: 125,
@@ -85,55 +85,61 @@ class _DevicceItemState extends State<DevicceItem> {
             flex: 2,
             child: SizedBox(
               height: 100,
-              child: widget.device.type != "btn" 
+              child: widget.device.type != "btn"
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        !widget.device.id.contains("ngu")
-                            ? Text(!status ? "Off" : "On",
+                        widget.device.type.contains("screen")
+                            ? Text("")
+                            : !widget.device.id.contains("ngu")
+                                ? Text(!status ? "Off" : "On",
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.orange))
+                                : Text(_sliderValue.ceil().toString(),
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.orange)),
+                        widget.device.type.contains("screen")
+                            ? Text(
+                                widget.device.description,
                                 style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange))
-                            : Text(_sliderValue.ceil().toString(),
-                                style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange)),
-                        !widget.device.id.contains("ngu")
-                            ? Switch(
-                                value: status,
-                                onChanged: (value) {
-                                  if (mounted)
-                                    setState(() {
-                                      status = value;
-                                    });
-                                  _updateFirebaseStatus(
-                                      widget.device.id, status);
-                                },
+                                    fontSize: 12, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
                               )
-                            : SizedBox(
-                                child: Slider(
-                                  min: 0,
-                                  max: 255,
-                                  value: _sliderValue,
-                                  onChanged: (value) {
-                                    if (mounted)
+                            : !widget.device.id.contains("ngu")
+                                ? Switch(
+                                    value: status,
+                                    onChanged: (value) {
                                       setState(() {
-                                        _sliderValue = value;
+                                        status = value;
                                       });
-                                  },
-                                  onChangeEnd: (a) {
-                                    _updateFirebaseStatusI(
-                                        widget.device.id, a.round());
-                                  },
-                                ),
-                              ),
+                                      _updateFirebaseStatus(
+                                          widget.device.id, status);
+                                    },
+                                  )
+                                : SizedBox(
+                                    child: Slider(
+                                      min: 0,
+                                      max: 255,
+                                      value: _sliderValue,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _sliderValue = value;
+                                        });
+                                      },
+                                      onChangeEnd: (a) {
+                                        _updateFirebaseStatusI(
+                                            widget.device.id, a.round());
+                                      },
+                                    ),
+                                  ),
                         Text(
                           widget.device.id.toUpperCase(),
                           style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                          maxLines: 1,
+                              fontSize: 18, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -178,6 +184,11 @@ class _DevicceItemState extends State<DevicceItem> {
                 255; // Set a default value or handle it according to your requirements
           }
         });
+      else {
+        // Handle the case where the snapshot value is null
+        _sliderValue =
+            0.0; // Set a default value or handle it according to your requirements
+      }
     });
   }
 }
