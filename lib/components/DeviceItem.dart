@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +47,8 @@ class _DevicceItemState extends State<DevicceItem> {
       case "btn":
         iconW = Icons.radio_button_checked;
         break;
+      case "screen":
+        iconW = Icons.screenshot_monitor_rounded;
     }
     return Container(
       height: 125,
@@ -89,6 +91,7 @@ class _DevicceItemState extends State<DevicceItem> {
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        widget.device.type.contains("screen")? Text(""):
                         !widget.device.id.contains("ngu")
                             ? Text(!status ? "Off" : "On",
                                 style: const TextStyle(
@@ -100,14 +103,19 @@ class _DevicceItemState extends State<DevicceItem> {
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.orange)),
-                        !widget.device.id.contains("ngu")
+                        widget.device.type.contains("screen")
+                            ?Text(
+                          widget.device.description,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ): !widget.device.id.contains("ngu")
                             ? Switch(
                                 value: status,
                                 onChanged: (value) {
-                                  if (mounted)
-                                    setState(() {
-                                      status = value;
-                                    });
+                                  setState(() {
+                                    status = value;
+                                  });
                                   _updateFirebaseStatus(
                                       widget.device.id, status);
                                 },
@@ -118,10 +126,9 @@ class _DevicceItemState extends State<DevicceItem> {
                                   max: 255,
                                   value: _sliderValue,
                                   onChanged: (value) {
-                                    if (mounted)
-                                      setState(() {
-                                        _sliderValue = value;
-                                      });
+                                    setState(() {
+                                      _sliderValue = value;
+                                    });
                                   },
                                   onChangeEnd: (a) {
                                     _updateFirebaseStatusI(
@@ -132,8 +139,7 @@ class _DevicceItemState extends State<DevicceItem> {
                         Text(
                           widget.device.id.toUpperCase(),
                           style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                          maxLines: 1,
+                              fontSize: 18, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -158,26 +164,25 @@ class _DevicceItemState extends State<DevicceItem> {
 
     _databaseReference.child(widget.device.id).onValue.listen((event) {
       var snapshot = event.snapshot;
-      if (mounted)
-        setState(() {
-          // Ensure the value is not null before parsing
-          if (snapshot.value != null) {
-            try {
-              !widget.device.id.contains("ngu")
-                  ? status = snapshot.value == true
-                  : _sliderValue = double.parse(snapshot.value.toString());
-            } catch (e) {
-              print("Error parsing double: $e");
-              // Handle the error (e.g., set a default value)
-              _sliderValue =
-                  0.0; // Set a default value or handle it according to your requirements
-            }
-          } else {
-            // Handle the case where the snapshot value is null
+      setState(() {
+        // Ensure the value is not null before parsing
+        if (snapshot.value != null) {
+          try {
+            !widget.device.id.contains("ngu")
+                ? status = snapshot.value == true
+                : _sliderValue = double.parse(snapshot.value.toString());
+          } catch (e) {
+            print("Error parsing double: $e");
+            // Handle the error (e.g., set a default value)
             _sliderValue =
                 0.0; // Set a default value or handle it according to your requirements
           }
-        });
+        } else {
+          // Handle the case where the snapshot value is null
+          _sliderValue =
+              0.0; // Set a default value or handle it according to your requirements
+        }
+      });
     });
   }
 }
