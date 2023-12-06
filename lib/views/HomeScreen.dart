@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     User? currentUser = FirebaseAuth.instance.currentUser;
     String? email = currentUser?.email;
     String emailString = email!;
-    bool barrier = true;
+    bool barrier = false;
     bool isAuthed = await checkUserAuthedByEmail(emailString);
     if (isAuthed == false)
       _showCustomDialog(context, barrier);
@@ -85,11 +85,11 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width, vertical: 900),
+              horizontal: MediaQuery.of(context).size.width, vertical: 990),
           backgroundColor: Colors.red,
           title: Center(
               child: Text(
-            "Vui lòng chờ xác nhận",
+            "Chờ xác nhận",
             style: TextStyle(
                 color: Colors.yellow,
                 fontWeight: FontWeight.bold,
@@ -102,7 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                getUserAuthStatus();
+                if (barrier) {
+                  Navigator.of(context).pop();
+                }
               },
               child: Text(
                 "Đóng",
