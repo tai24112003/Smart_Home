@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:smarthome/components/BottomNav.dart';
 import 'package:smarthome/components/HomeDetail.dart';
 import 'package:smarthome/models/room.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,10 +28,91 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
+  bool check = false;
   @override
   void initState() {
     super.initState();
+
     _loadata();
+    setState(() {
+      getUserAuthStatus();
+    });
+  }
+
+  void getUserAuthStatus() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    String emailString = email!;
+    bool barrier = true;
+    bool isAuthed = await checkUserAuthedByEmail(emailString);
+    if (isAuthed == false)
+      _showCustomDialog(context, barrier);
+    else
+      barrier = false;
+    // Tiếp tục xử lý dựa trên kết quả isAuthed
+  }
+
+  Future<bool> checkUserAuthedByEmail(String email) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('email', isEqualTo: email)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+            querySnapshot.docs.first;
+        Map<String, dynamic>? userData =
+            userSnapshot.data() as Map<String, dynamic>?;
+        bool auth = userData?['auth'] ?? false;
+        return auth;
+      } else {
+        return false; // Không tìm thấy người dùng
+      }
+    } catch (e) {
+      print('Lỗi khi kiểm tra quyền admin: $e');
+      return false; // Xử lý lỗi
+    }
+  }
+
+  Future<void> _showCustomDialog(BuildContext context, bool barrier) async {
+    return showDialog(
+      barrierDismissible: barrier,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width, vertical: 900),
+          backgroundColor: Colors.red,
+          title: Center(
+              child: Text(
+            "Chờ xác nhận",
+            style: TextStyle(
+                color: Colors.yellow,
+                fontWeight: FontWeight.bold,
+                fontSize: 25),
+          )),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                getUserAuthStatus();
+              },
+              child: Text(
+                "Đóng",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -42,12 +127,15 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             children: [
               Image.asset(
-                'assets/img/logo.jpg', 
+                'assets/img/logo.jpg',
                 height: 60,
-                width: 60, 
+                width: 60,
               ),
-              const SizedBox(width: 10), 
-              const Text('Welcome Home',style: TextStyle(fontWeight: FontWeight.bold),),
+              const SizedBox(width: 10),
+              const Text(
+                'Welcome Home',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           bottom: TabBar(
