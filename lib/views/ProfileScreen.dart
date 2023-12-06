@@ -388,7 +388,7 @@ class _AccountTabBarState extends State<AccountTabBar> {
                         subtitle: Text(userEmail,
                             style: TextStyle(color: Colors.white)),
                         trailing: SizedBox(
-                          width: 200,
+                          width: 80,
                           child: FutureBuilder<bool>(
                             future: getIsAdminForCurrentUser(),
                             builder: (context, adminSnapshot) {
@@ -419,34 +419,10 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                           ),
                                           color: Colors.white,
                                           onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                title: Text(
-                                                    'Xác nhận xóa người dùng'),
-                                                content: Text(
-                                                    'Bạn có chắc chắn muốn xóa người dùng $userEmail?'),
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text('Hủy'),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                  TextButton(
-                                                    child: Text('Xóa'),
-                                                    onPressed: () {
-                                                      deleteUser(email);
-                                                      // deleteUserAccountByEmail(
-                                                      //     email);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            );
+                                            setState(() {
+                                              deleteUser(email);
+                                              deleteUserAccountByEmail(email);
+                                            });
                                           },
                                         ),
                                       ],
