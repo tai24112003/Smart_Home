@@ -88,7 +88,7 @@ class _BottomAppBarCustomState extends State<BottomAppBarCustom> {
                       color: Colors.yellow,
                       fontWeight: FontWeight.bold,
                       fontSize: 16)),
-              Image.asset("root/assets/img/baochay.jpg")
+              Image.asset("assets/img/baochay.jpg")
             ],
           ),
           actions: [

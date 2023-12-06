@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-import 'Profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:smarthome/views/LoginScreen.dart';
-import 'AccountManage.dart';
+import 'LoginScreen.dart';
 
 class DkTaiKhoan extends StatefulWidget {
   @override
@@ -13,7 +10,7 @@ class DkTaiKhoan extends StatefulWidget {
 }
 
 class _DkTaiKhoanState extends State<DkTaiKhoan> {
-  String noti = "";
+  late TextEditingController _noti;
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
   late TextEditingController _rePasword;
@@ -21,6 +18,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
   @override
   void initState() {
     super.initState();
+    _noti = TextEditingController();
     _rePasword = TextEditingController();
     _usernameController = TextEditingController();
     _displayName = TextEditingController();
@@ -29,6 +27,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
 
   @override
   void dispose() {
+    _noti.dispose();
     _rePasword.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
@@ -45,11 +44,10 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
         child: Column(
           children: [
             SizedBox(height: 50),
-              Container(
-              width: 200,
-              height: 200,
-              child: Image.asset("root/assets/img/logo.jpg")
-            ),
+            Container(
+                width: 200,
+                height: 200,
+                child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -79,7 +77,7 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 ),
               ),
             ),
-            SizedBox(height: 50),
+            SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -168,27 +166,23 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                 ),
               ),
             ),
-            Text("${noti}", style: TextStyle(color: Colors.red)),
+            Text(
+              _noti.text,
+              style: TextStyle(color: Colors.red),
+            ),
             SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
                 if (_passwordController.text
                         .compareTo(_passwordController.text) ==
                     0) {
-                  registerWithEmailPassword(_usernameController.text,
+                  registerWithEmailPassword(_usernameController.text.trim(),
                       _passwordController.text, _displayName.text);
                   // signUp(_usernameController.text, _passwordController.text);
-                  // saveAccountInfo(
-                  //     _usernameController.text, _passwordController.text);
-                  // saveCredentials(
-                  //     _usernameController.text, _passwordController.text);
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/login',
-                    (Route<dynamic> route) => false,
-                  );
+
+                  Navigator.pushReplacementNamed(context, '/');
                 } else
-                  noti = "Mật khẩu xác nhận không chính xác";
+                  _noti.text = "Mật khẩu không trùng khớp";
 
                 // Xử lý khi nút được nhấn
               },
@@ -234,8 +228,10 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
         'email': email,
         'displayName': displayName,
       });
-      // saveAccountInfo(_usernameController.text, _passwordController.text);
-      // saveCredentials(_usernameController.text, _passwordController.text);
+//                     saveAccountInfo(
+//                     _usernameController.text, _passwordController.text);
+//                 saveCredentials(
+//                     _usernameController.text, _passwordController.text);
       // Người dùng đã được đăng ký thành công và thông tin đã được lưu vào Firestore
     } catch (e) {
       // Xử lý lỗi nếu có

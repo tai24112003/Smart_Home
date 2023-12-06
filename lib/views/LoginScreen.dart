@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:smarthome/components/AppBar.dart';
-import 'package:smarthome/components/BottomNav.dart';
 import 'package:smarthome/views/HomeScreen.dart';
 import 'AccountManage.dart';
 import 'DK_TaiKhoan.dart';
@@ -20,31 +18,27 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  String messageLogin="";
+  String messageLogin = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor:const Color.fromRGBO(30, 53, 71, 1)
-      ),
-      backgroundColor: const Color.fromRGBO(30, 53, 71, 1),
+      backgroundColor: Color.fromRGBO(30, 53, 71, 1),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 50),
             Container(
-              width: 200,
-              height: 200,
-              child: Image.asset("root/assets/img/logo.jpg")
-            ),
+                width: 200,
+                height: 200,
+                child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                controller: _usernameController,
                 style: TextStyle(
                   color: Colors.white, // Set text color to white
                 ),
-                controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   labelStyle: TextStyle(
@@ -69,19 +63,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 20),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 20),
-            //   child: TextField(
-            //     obscureText: true,
-            //     decoration: InputDecoration(
-            //       labelText: 'Số điện thoại',
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(height: 20),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -112,7 +93,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 50),
-            Text(messageLogin,style: TextStyle(color: Colors.white),),
+            Text(
+              messageLogin,
+              style: TextStyle(color: Colors.white),
+            ),
             SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -121,10 +105,16 @@ class _LoginPageState extends State<LoginPage> {
                 Column(children: [
                   ElevatedButton(
                     onPressed: () {
-                      loginWithEmailPassword(
-                          _usernameController.text, _passwordController.text);
+                      loginWithEmailPassword(_usernameController.text.trim(),
+                          _passwordController.text);
                       signIn(
                           _usernameController.text, _passwordController.text);
+
+                      // requestLogin(
+                      //     _usernameController.text, _usernameController.text);
+                      // sendNotification("1569hDWLkyb5ICqvXyzUEdOvixG3",
+                      //     _usernameController.text, _usernameController.text);
+                      // Lấy mã thông báo đăng ký
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Color.fromRGBO(77, 101, 125, 1),
@@ -145,10 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => DkTaiKhoan()),
-                        );
+                        Navigator.pushReplacementNamed(context, '/dangki');
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Color.fromRGBO(77, 101, 125, 1),
@@ -175,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void requestLogin(String email, String username) {
-    if (email != "thanhkiet.101023@gmail.com") {
+    if (email != "thanhkiet@gmail.com") {
       // Gửi yêu cầu đăng nhập đến tài khoản "thanhkiet.1023@gmail.com"
       final data = {
         'email': email,
@@ -239,11 +226,15 @@ class _LoginPageState extends State<LoginPage> {
       );
       // Người dùng đã đăng nhập thành công
       // Chuyển hướng đến trang chủ hoặc thực hiện các tác vụ liên quan
-     Navigator.pushReplacementNamed(context, '/home'); 
+      Navigator.pushReplacementNamed(context, '/home');
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => QL_TaiKhoan()),
+      // );
     } catch (e) {
-     setState(() {
-       messageLogin="Đăng nhập không thành công";
-     });
+      setState(() {
+        messageLogin = "Đăng nhập không thành công";
+      });
     }
   }
 

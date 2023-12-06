@@ -14,7 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Room(
           id: '',
           name: '',
-          devices: List.filled(0, Device(id: '', type: '', description: ''))));
+          devices: List.filled(0, Device(id: '', type: '', description: '')),
+          img: ''));
   _loadata() {
     Room.getData().then((value) {
       setState(() {
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             children: [
               Image.asset(
-                'root/assets/img/logo.jpg', 
+                'assets/img/logo.jpg', 
                 height: 60,
                 width: 60, 
               ),

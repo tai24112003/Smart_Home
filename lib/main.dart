@@ -1,16 +1,25 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/firebase_options.dart';
+import 'package:smarthome/views/AccountManage.dart';
 import 'package:smarthome/views/DK_TaiKhoan.dart';
-import 'package:smarthome/views/DetailRoomScreen.dart';
-import 'package:smarthome/views/ForgetScreen.dart';
 import 'package:smarthome/views/HomeScreen.dart';
-import 'package:smarthome/views/LoginScreen.dart';
 import 'package:smarthome/views/ProfileScreen.dart';
+import 'package:smarthome/views/ProfileScreen.dart';
+import './views/LoginScreen.dart';
+import 'package:smarthome/views/DetailRoomScreen.dart';
+import 'package:smarthome/views/HomeScreen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
+  if (fcmToken != null) {
+    print('Mã thông báo đăng ký của thiết bị: $fcmToken');
+  } else {
+    print('Không thể lấy mã thông báo đăng ký');
+  }
   runApp(const MyApp());
 }
 
@@ -20,18 +29,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
       routes: {
+        "/": (context) => LoginPage(),
+        "/dangki": (context) => DkTaiKhoan(),
         "/home": (context) => HomeScreen(),
-        "/profile": (context) => ProfileScreen(),
-        "/forget": (context) => ForgetScreen(),
-        "/login":(context) => LoginPage(),
+        "/profile": (context) => AccountTabBar(),
       },
+      initialRoute: '/',
     );
   }
 }

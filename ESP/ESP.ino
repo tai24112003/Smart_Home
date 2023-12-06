@@ -6,8 +6,8 @@
 char serialBuffer[64];
 int bufferIndex = 0;
 
-#define WIFI_SSID "V2026"
-#define WIFI_PASSWORD "Vinh2908"
+#define WIFI_SSID "Tai"
+#define WIFI_PASSWORD "01092003"
 #define FIREBASE_HOST "smarthome-f6a60-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "1cAj58eFBmPDA7jrCgw34rXhsPNm1PhPuwmFJF8g"
 
@@ -19,7 +19,9 @@ bool stt_led_p1 = false;
 bool stt_led_p2 = false;
 bool stt_led_bep = false;
 bool stt_servo = false;
+bool system_lock = false;
 int stt_ngu1 = 0;
+int stt_ngu2 = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -84,6 +86,21 @@ void loop() {
     stt_ngu1 = servo;
     // Gửi dữ liệu về ATmega328P qua UART
   }
+  if (Firebase.getInt(firebaseData, "/led_ngu2")) {
+    int servo = firebaseData.intData();
+    if (stt_ngu2 != servo)
+      Serial.println("led_ngu2: " + String(servo));
+    stt_ngu2 = servo;
+    // Gửi dữ liệu về ATmega328P qua UART
+  }
+
+  if (Firebase.getInt(firebaseData, "/system_lock")) {
+    int servo = firebaseData.intData();
+    if (system_lock != servo)
+      Serial.println("system_lock: " + String(servo));
+    system_lock = servo;
+    // Gửi dữ liệu về ATmega328P qua UART
+  }
 
   // Đọc dữ liệu từ ATmega328P qua UART
   while (Serial.available() > 0) {
@@ -102,8 +119,13 @@ void loop() {
         key.trim();
         value.trim();
 
+
         bool boolvalue = (value.toInt() == 1);
-        Firebase.setBool(firebaseData, key.c_str(), boolvalue);
+        int intValue = value.toInt();
+        if (!key.equals("led_ngu1")&&!key.equals("led_ngu2"))
+          Firebase.setBool(firebaseData, key.c_str(), boolvalue);
+        else
+          Firebase.setInt(firebaseData, key.c_str(), intValue);
       }
 
       // Reset bufferIndex for the next message

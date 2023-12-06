@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:smarthome/models/db_reader.dart';
 
 class Device {
@@ -26,12 +27,13 @@ class Room {
   final String id;
   final String name;
   final List<Device> devices;
+  final String img;
 
-  Room({
-    required this.id,
-    required this.name,
-    required this.devices,
-  });
+  Room(
+      {required this.id,
+      required this.name,
+      required this.devices,
+      required this.img});
 
   factory Room.fromJson(Map<String, dynamic> json) {
     try {
@@ -43,6 +45,7 @@ class Room {
         id: json['id'],
         name: json['name'],
         devices: devices,
+        img: json['img'] ?? '', // Thêm kiểm tra null ở đây
       );
     } catch (e) {
       print("Lỗi khi ánh xạ JSON: $e");
@@ -52,29 +55,19 @@ class Room {
 
   static List<Room> rooms = [];
   static Future<void> getData() async {
+    DatabaseReference reference = FirebaseDatabase.instance.reference();
     try {
-      InfoRender render = InfoRender();
-      String jsonString = await render.getInfo();
-
-      List<dynamic> jsonData = json.decode(jsonString);
-      // print("Dữ liệu JSON: $jsonData");
-
-      rooms = jsonData.map((room) {
-        var roomInstance = Room.fromJson(room);
-        // print("Room ID: ${roomInstance.id}");
-        // print("Room Name: ${roomInstance.name}");
-
-        roomInstance.devices.forEach((device) {
-          // print("  Device ID: ${device.id}");
-          // print("  Device Type: ${device.type}");
-          // print("  Device Description: ${device.description}");
-        });
-
-        return roomInstance;
-      }).toList();
-      // print(rooms[0].id);
-    } catch (e) {
-      print("Lỗi khi lấy dữ liệu: $e");
+      DatabaseEvent snap = await reference.once();
+      String str = jsonEncode(snap.snapshot.value);
+      Map<String, dynamic> data = jsonDecode(str);
+      rooms.clear();
+      for (var entry in data['room']) {
+        if (entry != null) {
+          rooms.add(Room.fromJson(entry));
+        }
+      }
+    } catch (error) {
+      print('Error reading data: $error');
     }
   }
 }

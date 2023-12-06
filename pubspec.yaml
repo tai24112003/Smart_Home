@@ -35,18 +35,19 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  firebase_dynamic_links: ^5.4.6
+  firebase_messaging: ^14.7.6
+  firebase: ^9.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
   cloud_firestore: ^4.13.3
   firebase_database: ^10.3.6
   firebase_core: ^2.24.0
   firebase_auth: ^4.15.0
   google_sign_in: ^6.1.6
   permission_handler: ^9.2.0
-  firebase_messaging: ^14.7.6
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -68,8 +69,14 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - data/room.json
-      - root/assets/img/logo.jpg
-      - root/assets/img/baochay.jpg
+      - assets/img/
+  #     - assets/img/myliv.jpg
+  #     - assets/img/nhatam.jpg
+  #     - assets/img/phongngu.jpg
+  #     - assets/img/san.jpg
+  #     - assets/img/hl.jpg
+  # #   - images/a_dot_burr.jpeg
+  #     - assets/img/baochay.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

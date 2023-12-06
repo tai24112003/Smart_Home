@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/components/BuildListItem.dart';
 import 'package:smarthome/components/DeviceItem.dart';
@@ -16,15 +17,25 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
   List<Device> led = [];
   List<Device> motor = [];
   List<Device> btn = [];
+  List<Device> lcd = [];
   void _loadData() {
     Room.getData().then((value) {
       setState(() {
         // Filter the room based on the condition
-        rooms = Room.rooms.firstWhere((element) => element.id == "san",
-            orElse: () => Room(id: "", name: "", devices: []));
+        rooms = Room.rooms.firstWhere(
+            (element) => element.id == widget.id.toString(),
+            orElse: () => Room(id: "", name: "", img: "", devices: []));
 
         // Check if the room was found before accessing its devices
         if (rooms != null) {
+          lcd = rooms!.devices
+              .where((e) => e.type == "screen")
+              .map((e) => Device(
+                    id: e.id,
+                    type: e.type,
+                    description: e.description,
+                  ))
+              .toList();
           led = rooms!.devices
               .where((e) => e.type == "led")
               .map((e) => Device(
@@ -41,14 +52,14 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                     description: e.description,
                   ))
               .toList();
-          motor = rooms!.devices
-              .where((e) => e.type == "servo")
-              .map((e) => Device(
-                    id: e.id,
-                    type: e.type,
-                    description: e.description,
-                  ))
-              .toList();
+          // motor = rooms!.devices
+          //     .where((e) => e.type == "servo")
+          //     .map((e) => Device(
+          //           id: e.id,
+          //           type: e.type,
+          //           description: e.description,
+          //         ))
+          //     .toList();
         }
       });
     });
@@ -60,7 +71,7 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        backgroundColor: Color.fromRGBO(30, 53, 71, 1), 
+        backgroundColor: Color.fromRGBO(30, 53, 71, 1),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -106,10 +117,11 @@ class _DetailRoomScreenState extends State<DetailRoomScreen> {
                       BuildItem(list: led),
                       BuildItem(list: motor),
                       BuildItem(list: btn),
+                      BuildItem(list: lcd)
                     ],
                   ),
                 )
-              : const Center(
+              : Center(
                   child: Text("Loading",
                       style: TextStyle(
                           color: Colors.white,
