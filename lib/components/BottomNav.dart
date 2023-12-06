@@ -1,6 +1,8 @@
-                                                                                                                                                                                                                                  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:smarthome/main.dart';
 
 class BottomAppBarCustom extends StatefulWidget {
   const BottomAppBarCustom({super.key, required this.active});
@@ -55,10 +57,27 @@ class _BottomAppBarCustomState extends State<BottomAppBarCustom> {
 
   @override
   void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
     super.initState();
     _databaseReference.child('baodong').onValue.listen((event) {
       var snapshot = event.snapshot;
+      print('Giá trị từ Firebase: ${snapshot.value}');
       if (snapshot.value == true) {
+        Future.delayed(Duration(seconds: 1), () {
+          AwesomeNotifications().createNotification(
+            content: NotificationContent(
+              id: 3,
+              channelKey: 'basic_channel',
+              title: "Khẩn cấp",
+              body:"Tới công chuyện rồi thí chủ ơi!!! Cháy nhà",
+              color: Colors.red,
+            ),
+          );
+        });
         _showCustomDialog(context);
       }
     });
@@ -111,4 +130,18 @@ class _BottomAppBarCustomState extends State<BottomAppBarCustom> {
       },
     );
   }
+}
+
+void main() async {
+  await AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel for basic tests',
+      )
+    ],
+    debug: true,
+  );
 }
