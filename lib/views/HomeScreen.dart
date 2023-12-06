@@ -31,6 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   User? currentUser = FirebaseAuth.instance.currentUser;
   User? user = FirebaseAuth.instance.currentUser;
   bool check = false;
+  bool barrier = false;
+  String close = "";
+
   @override
   void initState() {
     super.initState();
@@ -42,16 +45,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getUserAuthStatus() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    String? email = currentUser?.email;
+    User currentUser = FirebaseAuth.instance.currentUser!;
+    String email = currentUser.email!;
     String emailString = email!;
-    bool barrier = false;
     bool isAuthed = await checkUserAuthedByEmail(emailString);
-    if (isAuthed == false)
+    if (isAuthed == false && check == false) {
       _showCustomDialog(context, barrier);
-    else
+      check = true;
+    }
+    if (isAuthed == true) {
       barrier = true;
+      close = "Đóng";
+      Navigator.of(context).pop();
+    }
+
     // Tiếp tục xử lý dựa trên kết quả isAuthed
+  }
+
+  void reloadPage() {
+    setState(() {});
   }
 
   Future<bool> checkUserAuthedByEmail(String email) async {
@@ -101,16 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                setState(() {
+                onPressed: () {
                   getUserAuthStatus();
-                });
-              },
-              child: Text(
-                "Đóng",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+                },
+                child: Text(
+                  "Đóng",
+                  style: TextStyle(color: Colors.white),
+                ))
           ],
         );
       },

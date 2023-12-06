@@ -26,14 +26,17 @@ class _AccountTabBarState extends State<AccountTabBar> {
   late String displayName = "";
   late String email = "";
   late Device device;
+
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     super.initState();
     _databaseReference.child("system_lock").onValue.listen((event) {
       var snapshot = event.snapshot;
-      setState(() {
-        status = snapshot.value == true;
-      });
+      if (mounted)
+        setState(() {
+          status = snapshot.value == true;
+        });
     });
     // Lấy thông tin người dùng hiện tại một lần
     loadUserData();
@@ -207,7 +210,7 @@ class _AccountTabBarState extends State<AccountTabBar> {
         print('Cập nhật thành công');
       }
     } catch (error) {
-      print('Lỗi khi cập nhật trường auth: $error');
+      print('Lỗi khi cập nhật trường isAdmin: $error');
     }
   }
 
@@ -259,21 +262,27 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                 style: TextStyle(color: Colors.white)),
                           ],
                         )),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
                       children: [
-                        Icon(
-                          status == true ? Icons.lock : Icons.lock_open,
-                          color: status == true ? Colors.red : Colors.green,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              status == true ? Icons.lock : Icons.lock_open,
+                              color: status == true ? Colors.red : Colors.green,
+                            ),
+                            Switch(
+                              value: status,
+                              onChanged: (value) {
+                                status = value;
+                                _updateFirebaseStatus("system_lock", status);
+                              },
+                            )
+                          ],
                         ),
-                        Switch(
-                          value: status,
-                          onChanged: (value) {
-                            if (checkUserAdminByEmail(email) == true) {
-                              status = value;
-                              _updateFirebaseStatus("system_lock", status);
-                            }
-                          },
+                        Text(
+                          "Khoa he thong",
+                          style: TextStyle(color: Colors.red),
                         )
                       ],
                     ),
@@ -307,23 +316,27 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                           child: Text('Đăng Xuất'),
                                           onPressed: () async {
                                             try {
-                                              User? user = FirebaseAuth
-                                                  .instance.currentUser;
-                                              setState(() {
-                                                if (checkUserAdminByEmail(
-                                                        email) ==
-                                                    false)
-                                                  updateAuthField(email, false);
+                                              if (mounted)
+                                                setState(() {
+                                                  if (checkUserAdminByEmail(
+                                                          user!.email
+                                                              .toString()) ==
+                                                      false)
+                                                    updateAuthField(
+                                                        user!.email.toString(),
+                                                        false);
 
-                                                signOutUser();
-                                                Navigator.popUntil(context,
-                                                    (route) => (route).isFirst);
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            LoginPage()));
-                                              });
+                                                  signOutUser();
+                                                  Navigator.popUntil(
+                                                      context,
+                                                      (route) =>
+                                                          (route).isFirst);
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              LoginPage()));
+                                                });
                                               // Thực hiện các thao tác sau khi đăng xuất thành công
                                             } catch (e) {
                                               print('Lỗi đăng xuất: $e');
@@ -379,7 +392,6 @@ class _AccountTabBarState extends State<AccountTabBar> {
                     String email = document['email'] != null
                         ? document['email'] as String
                         : '';
-                    String key = getEmailUsername(userEmail);
 
                     return Card(
                       color: Color.fromRGBO(30, 53, 71, 1),
@@ -389,7 +401,7 @@ class _AccountTabBarState extends State<AccountTabBar> {
                         subtitle: Text(userEmail,
                             style: TextStyle(color: Colors.white)),
                         trailing: SizedBox(
-                          width: 80,
+                          width: 100,
                           child: FutureBuilder<bool>(
                             future: getIsAdminForCurrentUser(),
                             builder: (context, adminSnapshot) {
