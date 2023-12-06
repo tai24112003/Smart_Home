@@ -17,8 +17,10 @@ int sttMenuselected = -1;
 int countMenu = 0;
 int countMenuSan = 0;
 
-bool stt_baodong=false;
-bool ispushed=false;
+bool stt_baodong = false;
+bool ispushed = false;
+bool ispushed_servo=false;
+
 bool stt_led_san = LOW;
 bool stt_led_khach = LOW;
 bool stt_led_hl = LOW;      // Added for MenuHL
@@ -45,7 +47,15 @@ void setup() {
 }
 
 void loop() {
-
+  if (ispushed == false && analogRead(A0) >= 200) {
+    Serial.println("baodong:1");
+    ispushed = true;
+  }else if(ispushed==true && analogRead(A0)<180){
+    Serial.println("baodong:0");
+    ispushed=false;
+  }
+  if(ispushed_servo==false&&analogRead(A1)<800) {Serial.print("servo:1"); ispushed_servo=true;}
+  else if(ispushed_servo==true&&analogRead(A1)>1000) {Serial.print("servo:1"); ispushed_servo=false;}
   while (Serial.available() > 0) {
     receivedChar = Serial.readString();
     // Xử lý dữ liệu từ ESP8266 (ví dụ: in ra Serial Monitor)
@@ -73,29 +83,28 @@ void loop() {
     else if (key.equals("system_lock"))
       system_lock = boolvalue;
   }
-  if(system_lock==false){
-  unsigned long t_cur = millis();
-  int btn_cur_stt = digitalRead(4);
-  if (btn_cur_stt == 0) {
-    if (t_high == 0) {
-      t_high = t_cur;
-    } else if (t_low != 0 && t_high2 == 0) {
-      t_high2 = t_cur;
-    }
-  } else {
-    if (t_high != 0 && t_high2 == 0 && t_cur - t_high >= 3000) {
-      if (sttMenuselected == 0 && sttmenu == false) 
-      {
-        if (countMenuSan == 0) Serial.println("led_san: " + String(stt_led_san ? "0" : "1"));
-        if (countMenuSan == 2) {
-          Serial.println("servo: " + String(stt_servo ? "0" : "1"));
-        }
-      } else if (sttMenuselected == 1 && sttmenu == false) {
+  if (system_lock == false) {
+    unsigned long t_cur = millis();
+    int btn_cur_stt = digitalRead(4);
+    if (btn_cur_stt == 0) {
+      if (t_high == 0) {
+        t_high = t_cur;
+      } else if (t_low != 0 && t_high2 == 0) {
+        t_high2 = t_cur;
+      }
+    } else {
+      if (t_high != 0 && t_high2 == 0 && t_cur - t_high >= 3000) {
+        if (sttMenuselected == 0 && sttmenu == false) {
+          if (countMenuSan == 0) Serial.println("led_san: " + String(stt_led_san ? "0" : "1"));
+          if (countMenuSan == 2) {
+            Serial.println("servo: " + String(stt_servo ? "0" : "1"));
+          }
+        } else if (sttMenuselected == 1 && sttmenu == false) {
           Serial.println("led_khach: " + String(stt_led_khach ? "0" : "1"));
         } else if (sttMenuselected == 2 && sttmenu == false) {
-          Serial.println("led_ngu1: " + String(stt_led_p1 < 250 ? stt_led_p1 +50 : 0));
+          Serial.println("led_ngu1: " + String(stt_led_p1 < 250 ? stt_led_p1 + 50 : 0));
         } else if (sttMenuselected == 3 && sttmenu == false) {
-          Serial.println("led_ngu2: " + String(stt_led_p2 < 250 ? stt_led_p2 +50 : 0));
+          Serial.println("led_ngu2: " + String(stt_led_p2 < 250 ? stt_led_p2 + 50 : 0));
         } else if (sttMenuselected == 4 && sttmenu == false) {
           Serial.println("led_hl: " + String(stt_led_hl ? "0" : "1"));  // Added for Nhatam
         } else if (sttMenuselected == 5 && sttmenu == false) {
@@ -103,9 +112,9 @@ void loop() {
         } else if (sttMenuselected == 6 && sttmenu == false) {
           Serial.println("led_nhatam: " + String(stt_led_nhatam ? "0" : "1"));  // Added for MenuBep
         }
-        
-      
-      if (countMenu == 0) {
+
+
+        if (countMenu == 0) {
 
           sttmenu = false;
           sttMenuselected = countMenu;
@@ -134,238 +143,237 @@ void loop() {
           sttmenu = false;
           sttMenuselected = countMenu;
         }
-      t_high = 0;
-      t_low = 0;
+        t_high = 0;
+        t_low = 0;
+      } else if (t_high2 != 0 && t_cur - t_high <= 500) {
+        if (sttmenu == false) {
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print(Menu1);
+          lcd.setCursor(0, 1);
+          lcd.print(Menu2);
+          lcd.setCursor(0, 0);
+          sttmenu = true;
+        }
+        t_high = 0;
+        t_high2 = 0;
+        t_low = 0;
+      } else {
+        if (t_high != 0 && t_cur - t_high > 500) {
+          if (t_high2 != 0 && t_cur - t_high2 >= 3000) {
+
+            if (sttMenuselected == 0 && sttmenu == false) {
+              if (countMenuSan == 0) Serial.println("led_san: " + String(stt_led_san ? "0" : "1"));
+              if (countMenuSan == 2) {
+                Serial.println("servo: " + String(stt_servo ? "0" : "1"));
+              }
+            } else if (sttMenuselected == 1 && sttmenu == false) {
+              Serial.println("led_khach: " + String(stt_led_khach ? "0" : "1"));
+            } else if (sttMenuselected == 2 && sttmenu == false) {
+              Serial.println("led_ngu1: " + String(stt_led_p1 < 250 ? stt_led_p1 + 50 : 0));
+            } else if (sttMenuselected == 3 && sttmenu == false) {
+              Serial.println("led_ngu2: " + String(stt_led_p2 < 250 ? stt_led_p2 + 50 : 0));
+            } else if (sttMenuselected == 4 && sttmenu == false) {
+              Serial.println("led_hl: " + String(stt_led_hl ? "0" : "1"));  // Added for Nhatam
+            } else if (sttMenuselected == 5 && sttmenu == false) {
+              Serial.println("led_bep: " + String(stt_led_bep ? "0" : "1"));  // Added for MenuHL
+            } else if (sttMenuselected == 6 && sttmenu == false) {
+              Serial.println("led_nhatam: " + String(stt_led_nhatam ? "0" : "1"));  // Added for MenuBep
+            }
+
+            if (countMenu == 0) {
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            if (countMenu == 1) {
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            if (countMenu == 2) {  // Added for P1
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            if (countMenu == 3) {  // Added for P2
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            if (countMenu == 4) {  // Added for Nhatam
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            if (countMenu == 5) {  // Added for MenuHL
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            if (countMenu == 6) {  // Added for MenuBep
+              sttmenu = false;
+              sttMenuselected = countMenu;
+            }
+            t_high = 0;
+            t_high2 = 0;
+            t_low = 0;
+          } else {
+            if (sttmenu == true)
+              countMenu++;
+            t_high = 0;
+            t_high2 = 0;
+            t_low = 0;
+          }
+        } else {
+          if (t_high != 0) {
+            t_low = t_cur;
+          }
+        }
+      }
     }
-    else if (t_high2 != 0 && t_cur - t_high <= 500) {
-      if (sttmenu == false) {
+    lcd.blink();
+    if (sttmenu == true && countMenu == 0) {
+      lcd.setCursor(0, 0);
+    } else if (sttmenu == true && countMenu == 1) {
+      lcd.setCursor(4, 0);
+    } else if (sttmenu == true && countMenu == 2) {
+      lcd.setCursor(10, 0);
+    } else if (sttmenu == true && countMenu == 3) {
+      lcd.setCursor(13, 0);
+    } else if (sttmenu == true && countMenu == 4) {
+      lcd.setCursor(0, 1);
+    } else if (sttmenu == true && countMenu == 5) {
+      lcd.setCursor(4, 1);
+    } else if (sttmenu == true && countMenu == 6) {
+      lcd.setCursor(9, 1);
+    } else if (sttmenu == true && countMenu == 7) {
+      countMenu = 0;
+    }
+    unsigned long t2_cur = millis();
+    int btn_cur_stt2 = digitalRead(3);
+    if (btn_cur_stt2 == 0) {
+      if (t2_high == 0)
+      //Truoc do chua high gio bat dau high-->bat dau thao tac
+      {
+        t2_high = t2_cur;
+      } else if (t2_low != 0 && t2_high2 == 0)
+      //da high xong lan 1 (co t_low), high lan 2
+      {
+        t2_high2 = t2_cur;
+      }
+    } else {
+      if (t2_high != 0 && t2_high2 == 0 && t2_cur - t2_high >= 3000)
+      //da high lan 1 va chua high lan 2 nhung thoi gian thuc hien qua 3s
+      {
+        t2_high = 0;
+        t2_low = 0;
+
+      } else if (t2_high2 != 0 && t2_cur - t2_high <= 1000)
+      //da high lan 2 va thoi gian <= 1s
+      {
+
+        t2_high = 0;
+        t2_high2 = 0;
+        t2_low = 0;
+      } else {
+        if (t2_high != 0 && t2_cur - t2_high > 1000)
+        //da high lan 1 va thoi gian > 1000
+        {
+          if (t2_high2 != 0 && t2_cur - t2_high2 >= 3000)
+          //thoi gian high lan 2 >3s
+          {
+            t2_high = 0;
+            t2_high2 = 0;
+            t2_low = 0;
+          } else {
+            if (sttmenu == false && sttMenuselected == 0) {
+              countMenuSan++;
+            }
+            t2_high = 0;
+            t2_high2 = 0;
+            t2_low = 0;
+          }
+        } else {
+          if (t2_high != 0)
+          //Neu da co high thi moi cap nhat t_low
+          {
+            t2_low = t2_cur;
+          }
+        }
+      }
+    }
+
+
+    if (sttMenuselected == 0 && sttmenu == false) {
+
+      if (millis() - times > 1000) {
+
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print(Menu1);
+        lcd.print("Led:" + String(stt_led_san ? "ON" : "OFF") + String(" rss:") + String(analogRead(A0)));
         lcd.setCursor(0, 1);
-        lcd.print(Menu2);
+        lcd.print("Servo:" + String(stt_servo) + String(" LCD"));
+        if (countMenuSan == 0) {
+          lcd.setCursor(4, 0);
+        } else if (countMenuSan == 1) {
+          lcd.setCursor(11, 0);
+        } else if (countMenuSan == 2) {
+          lcd.setCursor(7, 1);
+        } else if (countMenuSan == 3) {
+          lcd.setCursor(11, 1);
+        } else if (countMenuSan == 4) {
+          countMenuSan = 0;
+        }
+        times = millis();
+      }
+
+    } else if (sttMenuselected == 1 && sttmenu == false) {
+      if (millis() - times > 1000) {
+        lcd.clear();
         lcd.setCursor(0, 0);
-        sttmenu = true;
-      }
-      t_high = 0;
-      t_high2 = 0;
-      t_low = 0;
-    } else {
-      if (t_high != 0 && t_cur - t_high > 500) {
-        if (t_high2 != 0 && t_cur - t_high2 >= 3000) {
-
-          if (sttMenuselected == 0 && sttmenu == false) {
-            if (countMenuSan == 0) Serial.println("led_san: " + String(stt_led_san ? "0" : "1"));
-            if (countMenuSan == 2) {
-              Serial.println("servo: " + String(stt_servo ? "0" : "1"));
-            }
-          } else if (sttMenuselected == 1 && sttmenu == false) {
-            Serial.println("led_khach: " + String(stt_led_khach ? "0" : "1"));
-          } else if (sttMenuselected == 2 && sttmenu == false) {
-            Serial.println("led_ngu1: " + String(stt_led_p1 < 250 ? stt_led_p1+ 50 : 0));
-          } else if (sttMenuselected == 3 && sttmenu == false) {
-            Serial.println("led_ngu2: " + String(stt_led_p2 < 250 ? stt_led_p2+ 50 : 0));
-          } else if (sttMenuselected == 4 && sttmenu == false) {
-            Serial.println("led_hl: " + String(stt_led_hl ? "0" : "1"));  // Added for Nhatam
-          } else if (sttMenuselected == 5 && sttmenu == false) {
-            Serial.println("led_bep: " + String(stt_led_bep ? "0" : "1"));  // Added for MenuHL
-          } else if (sttMenuselected == 6 && sttmenu == false) {
-            Serial.println("led_nhatam: " + String(stt_led_nhatam ? "0" : "1"));  // Added for MenuBep
-          }
-
-          if (countMenu == 0) {
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          if (countMenu == 1) {
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          if (countMenu == 2) {  // Added for P1
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          if (countMenu == 3) {  // Added for P2
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          if (countMenu == 4) {  // Added for Nhatam
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          if (countMenu == 5) {  // Added for MenuHL
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          if (countMenu == 6) {  // Added for MenuBep
-            sttmenu = false;
-            sttMenuselected = countMenu;
-          }
-          t_high = 0;
-          t_high2 = 0;
-          t_low = 0;
-        } else {
-          if (sttmenu == true)
-            countMenu++;
-          t_high = 0;
-          t_high2 = 0;
-          t_low = 0;
-        }
-      } else {
-        if (t_high != 0) {
-          t_low = t_cur;
-        }
-      }
-    }
-  }
-  lcd.blink();
-  if (sttmenu == true && countMenu == 0) {
-    lcd.setCursor(0, 0);
-  } else if (sttmenu == true && countMenu == 1) {
-    lcd.setCursor(4, 0);
-  } else if (sttmenu == true && countMenu == 2) {
-    lcd.setCursor(10, 0);
-  } else if (sttmenu == true && countMenu == 3) {
-    lcd.setCursor(13, 0);
-  } else if (sttmenu == true && countMenu == 4) {
-    lcd.setCursor(0, 1);
-  } else if (sttmenu == true && countMenu == 5) {
-    lcd.setCursor(4, 1);
-  } else if (sttmenu == true && countMenu == 6) {
-    lcd.setCursor(9, 1);
-  } else if (sttmenu == true && countMenu == 7) {
-    countMenu = 0;
-  }
-  unsigned long t2_cur = millis();
-  int btn_cur_stt2 = digitalRead(3);
-  if (btn_cur_stt2 == 0) {
-    if (t2_high == 0)
-    //Truoc do chua high gio bat dau high-->bat dau thao tac
-    {
-      t2_high = t2_cur;
-    } else if (t2_low != 0 && t2_high2 == 0)
-    //da high xong lan 1 (co t_low), high lan 2
-    {
-      t2_high2 = t2_cur;
-    }
-  } else {
-    if (t2_high != 0 && t2_high2 == 0 && t2_cur - t2_high >= 3000)
-    //da high lan 1 va chua high lan 2 nhung thoi gian thuc hien qua 3s
-    {
-      t2_high = 0;
-      t2_low = 0;
-
-    } else if (t2_high2 != 0 && t2_cur - t2_high <= 1000)
-    //da high lan 2 va thoi gian <= 1s
-    {
-      
-      t2_high = 0;
-      t2_high2 = 0;
-      t2_low = 0;
-    } else {
-      if (t2_high != 0 && t2_cur - t2_high > 1000)
-      //da high lan 1 va thoi gian > 1000
-      {
-        if (t2_high2 != 0 && t2_cur - t2_high2 >= 3000)
-        //thoi gian high lan 2 >3s
-        {
-          t2_high = 0;
-          t2_high2 = 0;
-          t2_low = 0;
-        } else {
-          if (sttmenu == false && sttMenuselected == 0) {
-            countMenuSan++;
-          }
-          t2_high = 0;
-          t2_high2 = 0;
-          t2_low = 0;
-        }
-      } else {
-        if (t2_high != 0)
-        //Neu da co high thi moi cap nhat t_low
-        {
-          t2_low = t2_cur;
-        }
-      }
-    }
-  }
-
-
-  if (sttMenuselected == 0 && sttmenu == false) {
-
-    if (millis() - times > 1000) {
-
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_san ? "ON" : "OFF") + String(" rss:") + String(analogRead(A0)));
-      lcd.setCursor(0, 1);
-      lcd.print("Servo:" + String(stt_servo) + String(" LCD"));
-      if (countMenuSan == 0) {
+        lcd.print("Led:" + String(stt_led_khach ? "ON" : "OFF"));
         lcd.setCursor(4, 0);
-      } else if (countMenuSan == 1) {
-        lcd.setCursor(11, 0);
-      } else if (countMenuSan == 2) {
-        lcd.setCursor(7, 1);
-      } else if (countMenuSan == 3) {
-        lcd.setCursor(11, 1);
-      } else if (countMenuSan == 4) {
-        countMenuSan = 0;
+        times = millis();
       }
-      times = millis();
-    }
 
-  } else if (sttMenuselected == 1 && sttmenu == false) {
-    if (millis() - times > 1000) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_khach ? "ON" : "OFF"));
+    } else if (sttMenuselected == 2 && sttmenu == false) {  // Added for P1
+      if (millis() - times > 1000) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Led:" + String(stt_led_p1));
+        lcd.setCursor(4, 0);
+        times = millis();
+      }
+    } else if (sttMenuselected == 3 && sttmenu == false) {  // Added for P2
+      if (millis() - times > 1000) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Led:" + String(stt_led_p2));
+      }
       lcd.setCursor(4, 0);
-      times = millis();
-    }
+    } else if (sttMenuselected == 4 && sttmenu == false) {  // Added for Nhatam
+      if (millis() - times > 1000) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Led:" + String(stt_led_hl ? "ON" : "OFF"));
+        lcd.setCursor(4, 0);
+        times = millis();
+      }
+    } else if (sttMenuselected == 5 && sttmenu == false) {  // Added for MenuHL
+      if (millis() - times > 1000) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Led:" + String(stt_led_bep ? "ON" : "OFF"));
+        lcd.setCursor(0, 1);
+        lcd.print("Sensor Smoke:" + String(""));
+        lcd.setCursor(4, 0);
 
-  } else if (sttMenuselected == 2 && sttmenu == false) {  // Added for P1
-    if (millis() - times > 1000) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_p1));
-      lcd.setCursor(4, 0);
-      times = millis();
-    }
-  } else if (sttMenuselected == 3 && sttmenu == false) {  // Added for P2
-    if (millis() - times > 1000) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_p2));
-    }
-    lcd.setCursor(4, 0);
-  } else if (sttMenuselected == 4 && sttmenu == false) {  // Added for Nhatam
-    if (millis() - times > 1000) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_hl ? "ON" : "OFF"));
-      lcd.setCursor(4, 0);
-      times = millis();
-    }
-  } else if (sttMenuselected == 5 && sttmenu == false) {  // Added for MenuHL
-    if (millis() - times > 1000) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_bep ? "ON" : "OFF"));
-      lcd.setCursor(0, 1);
-      lcd.print("Sensor Smoke:" + String(""));
-      lcd.setCursor(4, 0);
+        times = millis();
+      }
 
-      times = millis();
+    } else if (sttMenuselected == 6 && sttmenu == false) {  // Added for MenuBep
+      if (millis() - times > 1000) {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Led:" + String(stt_led_nhatam ? "ON" : "OFF"));
+        lcd.setCursor(4, 0);
+        times = millis();
+      }
     }
-
-  } else if (sttMenuselected == 6 && sttmenu == false) {  // Added for MenuBep
-    if (millis() - times > 1000) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Led:" + String(stt_led_nhatam ? "ON" : "OFF"));
-      lcd.setCursor(4, 0);
-      times = millis();
-    }
-  }
   }
 }
