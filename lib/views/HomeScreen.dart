@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.red,
           title: Center(
               child: Text(
-            "Chờ xác nhận",
+            "Vui lòng chờ xác nhận",
             style: TextStyle(
                 color: Colors.yellow,
                 fontWeight: FontWeight.bold,
