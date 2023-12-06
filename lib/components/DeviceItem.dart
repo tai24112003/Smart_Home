@@ -92,22 +92,30 @@ class _DevicceItemState extends State<DevicceItem> {
                         widget.device.type.contains("screen")
                             ? Text("")
                             : !widget.device.id.contains("ngu")
-                                ? Text(!status ? "Off" : "On",
+                                ? Text(
+                                    !status ? "Off" : "On",
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.orange))
-                                : Text(_sliderValue.ceil().toString(),
+                                        color: Colors.orange),
+                                    maxLines: 1,
+                                  )
+                                : Text(
+                                    _sliderValue.ceil().toString(),
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.orange)),
+                                        color: Colors.orange),
+                                    maxLines: 1,
+                                  ),
                         widget.device.type.contains("screen")
                             ? Text(
                                 widget.device.description,
                                 style: const TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
+                                maxLines: 1,
+                                
                               )
                             : !widget.device.id.contains("ngu")
                                 ? Switch(
@@ -137,6 +145,7 @@ class _DevicceItemState extends State<DevicceItem> {
                                     ),
                                   ),
                         Text(
+                          maxLines: 1,
                           widget.device.id.toUpperCase(),
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
@@ -146,6 +155,7 @@ class _DevicceItemState extends State<DevicceItem> {
                     )
                   : Center(
                       child: Text(
+                      maxLines: 1,
                       widget.device.description,
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),

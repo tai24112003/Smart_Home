@@ -27,9 +27,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             SizedBox(height: 50),
             Container(
-                width: 200,
-                height: 200,
-                child: Image.asset("assets/img/logo.jpg")),
+                width: 200, height: 200, child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -227,7 +225,6 @@ class _LoginPageState extends State<LoginPage> {
       // Đăng nhập thành công, có thể thực hiện các xử lý khác
       // Ví dụ: Lấy thông tin người dùng từ Firestore
       Navigator.pushReplacementNamed(context, '/home');
-      
     } catch (e) {
       // Xử lý lỗi nếu có
       print('Lỗi đăng nhập: $e');

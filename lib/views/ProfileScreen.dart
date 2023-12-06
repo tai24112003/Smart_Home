@@ -388,7 +388,7 @@ class _AccountTabBarState extends State<AccountTabBar> {
                         subtitle: Text(userEmail,
                             style: TextStyle(color: Colors.white)),
                         trailing: SizedBox(
-                          width: 80,
+                          width: 120,
                           child: FutureBuilder<bool>(
                             future: getIsAdminForCurrentUser(),
                             builder: (context, adminSnapshot) {

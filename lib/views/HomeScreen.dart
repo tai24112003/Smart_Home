@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (isAuthed == false)
       _showCustomDialog(context, barrier);
     else
-      barrier = false;
+      barrier = true;
     // Tiếp tục xử lý dựa trên kết quả isAuthed
   }
 
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 setState(() {
                   if (barrier) {
-                    Navigator.of(context).pop();
+                    getUserAuthStatus();
                   }
                 });
               },
