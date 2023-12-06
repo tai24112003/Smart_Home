@@ -9,7 +9,7 @@ int trim_led_p1 = 0;  // Giá trị hiện tại của biến trở
 int trim_led_p = 0;
 String pass = "1010";
 String pass_in = "";
-bool system_lock = false;
+bool system_lock = true;
 
 String receivedChar;
 short pass_wrong = 0;
@@ -23,7 +23,7 @@ short btn_hl_bep = 4;
 
 short pot_p1 = A0;
 short pot_p2 = A1;
-short btn_baodong = 7;
+// short btn_baodong = 17;
 //short btn_toilet=6;
 short led_san = 8;
 short led_khach = 9;
@@ -37,7 +37,7 @@ bool stt_btn_san_khach = false;
 bool stt_btn_hl = false;
 bool stt_btn_p1 = false;
 bool stt_btn_p2 = false;
-bool stt_btn_baodong = false;
+// bool stt_baodong = false;
 bool stt_toilet = false;
 bool stt_led_san = LOW;
 bool stt_led_khach = LOW;
@@ -75,14 +75,14 @@ void setup() {
   Serial.begin(9600);
   lcd.init();
   lcd.backlight();
-  myservo.attach(4);
+  myservo.attach(7);
   // pinMode(btn_toilet, INPUT);
   pinMode(btn_san_khach, INPUT);
-   pinMode(btn_hl_bep, INPUT);
+  pinMode(btn_hl_bep, INPUT);
   pinMode(pot_p1, INPUT);
   pinMode(pot_p2, INPUT);
   pinMode(btn_pass, INPUT);
-  pinMode(btn_baodong, INPUT);
+  //  pinMode(btn_baodong, INPUT);
   pinMode(led_san, OUTPUT);
   pinMode(led_khach, OUTPUT);
   pinMode(led_hl, OUTPUT);
@@ -97,12 +97,12 @@ void loop() {
   int btn_cur_stt = digitalRead(btn_pass);
   int value_pot_p1 = analogRead(pot_p1);
   int value_pot_p2 = analogRead(pot_p2);
-  if(value_pot_p1 > value_pot1_l+25 || value_pot_p1 < value_pot1_l-25){
+  if (value_pot_p1 > value_pot1_l + 25 || value_pot_p1 < value_pot1_l - 25) {
     value_pot1_l = value_pot_p1;
     isApp = false;
     pushed = false;
   }
-  if(value_pot_p2 > value_pot2_l+25 || value_pot_p2 < value_pot2_l-25){
+  if (value_pot_p2 > value_pot2_l + 25 || value_pot_p2 < value_pot2_l - 25) {
     value_pot2_l = value_pot_p2;
     isApp2 = false;
     pushed2 = false;
@@ -111,23 +111,22 @@ void loop() {
     receivedChar = Serial.readString();
     // Xử lý dữ liệu từ ESP8266 (ví dụ: in ra Serial Monitor)
     int vt = receivedChar.indexOf(":");
-          Serial.println("systemlock:0");
 
     String key = receivedChar.substring(0, vt);
     String value = receivedChar.substring(vt + 1);
     key.trim();
     value.trim();
 
-    if (key.equals("led_ngu1")){
-       dosang = value.toInt();
-       if(dosang != dosang_l){
-        dosang_l=dosang;
-        isApp=true;
-       }
+    if (key.equals("led_ngu1")) {
+      dosang = value.toInt();
+      if (dosang != dosang_l) {
+        dosang_l = dosang;
+        isApp = true;
+      }
     }
     if (key.equals("led_ngu2")) {
       dosang2 = value.toInt();
-      if(dosang2!=dosang2_l){
+      if (dosang2 != dosang2_l) {
         dosang2_l = dosang2;
         isApp2 = true;
       }
@@ -137,20 +136,22 @@ void loop() {
     boolvalue = value == "1";
     if (key.equals("led_san"))
       stt_led_san = boolvalue;
-    else if (key.equals("led_khach"))
+    if (key.equals("led_khach"))
       stt_led_khach = boolvalue;
-    else if (key.equals("led_hl"))
+    if (key.equals("led_hl"))
       stt_led_hl = boolvalue;
-    else if (key.equals("led_bep"))
+    if (key.equals("led_bep"))
       stt_led_bep = boolvalue;
-    else if (key.equals("servo"))
+    if (key.equals("servo"))
       stt_servo = boolvalue;
-    else if (key.equals("led_ngu1"))
+    if (key.equals("led_ngu1"))
       dosang = value.toInt();
-    else if (key.equals("led_ngu2"))
+    if (key.equals("led_ngu2"))
       dosang2 = value.toInt();
-      else if (key.equals("system_lock"))
+    if (key.equals("system_lock"))
       system_lock = boolvalue;
+    if (key.equals("baodong"))
+      baodong = boolvalue;
   }
   switch (system_lock) {
     case true:
@@ -205,10 +206,10 @@ void loop() {
       if (pass_in.length() == pass.length()) {
         if (pass == pass_in) {
           pass_in = "";
-          
+
           time_open = millis();
           system_lock = false;
-          Serial.println("systemlock:0");
+          Serial.println("system_lock:0");
         } else {
           lcd.setCursor(0, 1);
           lcd.print("Sai MK");
@@ -251,52 +252,41 @@ void loop() {
         col++;
         lcd.clear();
       }
-      stt_pot_p1=true;
-      stt_pot_p2=true;
+      stt_pot_p1 = true;
+      stt_pot_p2 = true;
 
       lcd.setCursor(col, 0);
       lcd.print("WELCOME!!");
 
-      if (stt_servo == true) {
-        myservo.write(180);
-        stt_servo = false;
-        String s = "servo: ";
-        s.concat(stt_servo);
-        Serial.println(s);
-        time_quay = millis();
-      } else if (millis() - time_quay >= 2000) {
-        myservo.write(90);
-        time_quay = millis();
-      }
 
-      if (stt_pot_p1==true) {
-        if(isApp){
+      if (stt_pot_p1 == true) {
+        if (isApp) {
           analogWrite(led_p1, dosang);
-        }else{
-        
-        if(!pushed){
-          analogWrite(led_p1, map(value_pot_p1, 0, 1023, 0, 255));
-          Serial.println("led_ngu1: " + String(map(value_pot_p1, 0, 1023, 0, 255)));
-          pushed = true;
-        }
+        } else {
+
+          if (!pushed) {
+            analogWrite(led_p1, map(value_pot_p1, 0, 1023, 0, 255));
+            Serial.println("led_ngu1: " + String(map(value_pot_p1, 0, 1023, 0, 255)));
+            pushed = true;
+          }
         }
       }
-      if (stt_pot_p2==true) {
-        
-        if(isApp2){
+      if (stt_pot_p2 == true) {
+
+        if (isApp2) {
           analogWrite(led_p, dosang2);
-        }else{
+        } else {
           //Serial.println(String(map(value_pot_p2, 0, 1023, 0, 255)));
-        if(!pushed2){
-          analogWrite(led_p, map(value_pot_p2, 0, 1023, 0, 255));
-          Serial.println("led_ngu2: " + String(map(value_pot_p2, 0, 1023, 0, 255)));
-          pushed2 = true;
-        }
+          if (!pushed2) {
+            analogWrite(led_p, map(value_pot_p2, 0, 1023, 0, 255));
+            Serial.println("led_ngu2: " + String(map(value_pot_p2, 0, 1023, 0, 255)));
+            pushed2 = true;
+          }
         }
       }
 
-      
-     
+
+
 
       if (digitalRead(btn_san_khach)) {
 
@@ -427,18 +417,8 @@ void loop() {
       //     ;
       //     break;
       // }
-      if (digitalRead(btn_baodong)) {
-        if (stt_btn_baodong == false) {
-          baodong = !baodong;
-          stt_btn_baodong = true;
-          String s = "baodong: ";
-          s.concat(baodong);
-          Serial.println("baodong: ${baodong}");
-        }
 
-      } else {
-        stt_btn_baodong = false;
-      }
+
       if (baodong == true) {
         if (millis() % 10 == 0) {
           digitalWrite(led_san, !digitalRead(led_san));
@@ -450,6 +430,16 @@ void loop() {
         }
       }
 
+      if (stt_servo == true) {
+        myservo.write(180);
+        stt_servo = false;
+        String s = "servo: "+String(stt_servo);
+        Serial.println(s);
+        time_quay = millis();
+      } else if (millis() - time_quay >= 2000) {
+        myservo.write(90);
+        time_quay = millis();
+      }
       if (btn_cur_stt == 1) {
         if (t_high == 0)
         //Truoc do chua high gio bat dau high-->bat dau thao tac
@@ -468,12 +458,12 @@ void loop() {
           t_high = 0;
           t_low = 0;
           system_lock = true;
-          Serial.println("systemlock:1");
+          Serial.println("system_lock:1");
           pass_in = "";
           pass_wrong = 0;
           col = 0;
-          stt_pot_p1=false;
-          stt_pot_p2=false;
+          stt_pot_p1 = false;
+          stt_pot_p2 = false;
 
           digitalWrite(led_san, 0);
           digitalWrite(led_khach, 0);
@@ -499,12 +489,12 @@ void loop() {
               t_high2 = 0;
               t_low = 0;
               col = 0;
-              
-              
+
+
               system_lock = true;
-              Serial.println("systemlock:1");
-              stt_pot_p1=false;
-              stt_pot_p2=false;
+              Serial.println("system_lock:1");
+              stt_pot_p1 = false;
+              stt_pot_p2 = false;
               pass_in = "";
               pass_wrong = 0;
               digitalWrite(led_san, 0);

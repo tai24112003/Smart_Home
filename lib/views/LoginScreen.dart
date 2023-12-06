@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:smarthome/views/HomeScreen.dart';
 import 'AccountManage.dart';
@@ -15,10 +14,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   String messageLogin = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +27,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             SizedBox(height: 50),
             Container(
-                width: 200,
-                height: 200,
-                child: Image.asset("assets/img/logo.jpg")),
+                width: 200, height: 200, child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -107,8 +104,8 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       loginWithEmailPassword(_usernameController.text.trim(),
                           _passwordController.text);
-                      signIn(
-                          _usernameController.text, _passwordController.text);
+                      // signIn(
+                      //     _usernameController.text, _passwordController.text);
 
                       // requestLogin(
                       //     _usernameController.text, _usernameController.text);
@@ -180,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // Đăng nhập thành công, chuyển tới trang chủ
       loginWithEmailPassword(
-          _usernameController.text, _passwordController.text);
+          _usernameController.text.trim(), _passwordController.text);
       signIn(
           _usernameController.text,
           _passwordController
@@ -224,19 +221,36 @@ class _LoginPageState extends State<LoginPage> {
         email: email,
         password: password,
       );
-      // Người dùng đã đăng nhập thành công
-      // Chuyển hướng đến trang chủ hoặc thực hiện các tác vụ liên quan
+
+      // Đăng nhập thành công, có thể thực hiện các xử lý khác
+      // Ví dụ: Lấy thông tin người dùng từ Firestore
       Navigator.pushReplacementNamed(context, '/home');
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => QL_TaiKhoan()),
-      // );
     } catch (e) {
-      setState(() {
-        messageLogin = "Đăng nhập không thành công";
-      });
+      // Xử lý lỗi nếu có
+      print('Lỗi đăng nhập: $e');
     }
   }
+
+  // Future<void> loginWithEmailPassword(String email, String password) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     // Người dùng đã đăng nhập thành công
+  //     // Chuyển hướng đến trang chủ hoặc thực hiện các tác vụ liên quan
+  //     Navigator.pushReplacementNamed(context, '/home');
+  //     // Navigator.push(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => QL_TaiKhoan()),
+  //     // );
+  //   } catch (e) {
+  //     setState(() {
+  //       messageLogin = "Đăng nhập không thành công";
+  //     });
+  //   }
+  // }
 
   void signIn(String email, String password) async {
     try {
