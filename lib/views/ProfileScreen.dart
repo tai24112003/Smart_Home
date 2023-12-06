@@ -14,9 +14,13 @@ class AccountInfo {
   AccountInfo({required this.name, required this.email});
 }
 
+final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
+
 class AccountTabBar extends StatefulWidget {
   _AccountTabBarState createState() => _AccountTabBarState();
 }
+
+bool admin = admin;
 
 class _AccountTabBarState extends State<AccountTabBar> {
   late String displayName = "";
@@ -35,8 +39,68 @@ class _AccountTabBarState extends State<AccountTabBar> {
     loadUserData();
   }
 
-  final DatabaseReference _databaseReference =
-      FirebaseDatabase.instance.reference();
+  Future<bool> checkUserAuthedByEmail(String email) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('email', isEqualTo: email)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+            querySnapshot.docs.first;
+        Map<String, dynamic>? userData =
+            userSnapshot.data() as Map<String, dynamic>?;
+        bool auth = userData?['auth'] ?? false;
+        return auth;
+      } else {
+        return false; // Không tìm thấy người dùng
+      }
+    } catch (e) {
+      print('Lỗi khi kiểm tra quyền admin: $e');
+      return false; // Xử lý lỗi
+    }
+  }
+
+  Future<bool> checkUserAdminByEmail(String email) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('email', isEqualTo: email)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+            querySnapshot.docs.first;
+        Map<String, dynamic>? userData =
+            userSnapshot.data() as Map<String, dynamic>?;
+        bool isAdmin = userData?['isAdmin'] ?? false;
+        return isAdmin;
+      } else {
+        return false; // Không tìm thấy người dùng
+      }
+    } catch (e) {
+      print('Lỗi khi kiểm tra quyền admin: $e');
+      return false; // Xử lý lỗi
+    }
+  }
+
+  String getEmailUsername(String email) {
+    int atIndex = email.indexOf('@');
+    if (atIndex != -1) {
+      return email.substring(0, atIndex);
+    }
+    return email;
+  }
+
+  void updateKeyValue(String key, int value) {
+    final databaseRef = FirebaseDatabase.instance.ref();
+    databaseRef.child(key).set(value);
+  }
+
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref();
   Future<void> _updateFirebaseStatus(String key, bool status) async {
     try {
       await _databaseReference.update({key: status});
@@ -47,6 +111,37 @@ class _AccountTabBarState extends State<AccountTabBar> {
   }
 
   bool status = false;
+  Future<bool> getIsAdminForCurrentUser() async {
+    try {
+      // Kiểm tra xem người dùng có đăng nhập hay không
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        // Lấy email của người dùng đang đăng nhập
+        String email = currentUser.email ?? '';
+
+        // Thực hiện truy vấn để lấy tài liệu thỏa mãn điều kiện email
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .get();
+
+        // Lặp qua các tài liệu thỏa mãn điều kiện
+        for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+          // Kiểm tra giá trị trường 'isAdmin'
+          bool isAdminValue = documentSnapshot.get('isAdmin');
+
+          // Trả về giá trị bool
+          return isAdminValue;
+        }
+      }
+
+      // Trường hợp không tìm thấy tài liệu thỏa mãn điều kiện hoặc người dùng chưa đăng nhập
+      return false;
+    } catch (error) {
+      print('Lỗi khi lấy giá trị trường isAdmin: $error');
+      return false;
+    }
+  }
 
   Future<void> loadUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -65,6 +160,54 @@ class _AccountTabBarState extends State<AccountTabBar> {
           email = userData['email'] ?? 'Không có email';
         });
       }
+    }
+  }
+
+  Future<void> updateAuthField(String email, bool authValue) async {
+    try {
+      // Thực hiện truy vấn để lấy tài liệu thỏa mãn điều kiện email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      // Lặp qua các tài liệu thỏa mãn điều kiện
+      for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+        // Tham chiếu đến tài liệu cần cập nhật
+        DocumentReference documentRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(documentSnapshot.id);
+
+        // Cập nhật trường 'auth' với giá trị mới
+        await documentRef.update({'auth': authValue});
+        print('Cập nhật thành công');
+      }
+    } catch (error) {
+      print('Lỗi khi cập nhật trường auth: $error');
+    }
+  }
+
+  Future<void> updateIsAdminField(String email, bool authValue) async {
+    try {
+      // Thực hiện truy vấn để lấy tài liệu thỏa mãn điều kiện email
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      // Lặp qua các tài liệu thỏa mãn điều kiện
+      for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+        // Tham chiếu đến tài liệu cần cập nhật
+        DocumentReference documentRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(documentSnapshot.id);
+
+        // Cập nhật trường 'auth' với giá trị mới
+        await documentRef.update({'isAdmin': authValue});
+        print('Cập nhật thành công');
+      }
+    } catch (error) {
+      print('Lỗi khi cập nhật trường auth: $error');
     }
   }
 
@@ -126,8 +269,10 @@ class _AccountTabBarState extends State<AccountTabBar> {
                         Switch(
                           value: status,
                           onChanged: (value) {
-                            status = value;
-                            _updateFirebaseStatus("system_lock", status);
+                            if (checkUserAdminByEmail(email) == true) {
+                              status = value;
+                              _updateFirebaseStatus("system_lock", status);
+                            }
                           },
                         )
                       ],
@@ -162,6 +307,17 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                           child: Text('Đăng Xuất'),
                                           onPressed: () async {
                                             try {
+                                              User? user = FirebaseAuth
+                                                  .instance.currentUser;
+                                              setState(() {
+                                                if (checkUserAdminByEmail(
+                                                        email) ==
+                                                    false)
+                                                  updateAuthField(email, false);
+                                              });
+                                              signOutUser();
+                                              Navigator.popUntil(context,
+                                                  (route) => (route).isFirst);
                                               Navigator.pushReplacement(
                                                   context,
                                                   MaterialPageRoute(
@@ -219,6 +375,11 @@ class _AccountTabBarState extends State<AccountTabBar> {
                     DocumentSnapshot document = snapshot.data!.docs[index];
                     String displayName = document['displayName'];
                     String userEmail = document['email'];
+                    String email = document['email'] != null
+                        ? document['email'] as String
+                        : '';
+                    String key = getEmailUsername(userEmail);
+
                     return Card(
                       color: Color.fromRGBO(30, 53, 71, 1),
                       child: ListTile(
@@ -226,34 +387,77 @@ class _AccountTabBarState extends State<AccountTabBar> {
                             style: TextStyle(color: Colors.white)),
                         subtitle: Text(userEmail,
                             style: TextStyle(color: Colors.white)),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          color: Colors.white,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('Xác nhận xóa người dùng'),
-                                content: Text(
-                                    'Bạn có chắc chắn muốn xóa người dùng $userEmail?'),
-                                actions: [
-                                  TextButton(
-                                    child: Text('Hủy'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text('Xóa'),
-                                    onPressed: () {
-                                      deleteUser(userEmail);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                        trailing: SizedBox(
+                          width: 200,
+                          child: FutureBuilder<bool>(
+                            future: getIsAdminForCurrentUser(),
+                            builder: (context, adminSnapshot) {
+                              bool isAdmin = adminSnapshot.data ?? false;
+                              return FutureBuilder<bool>(
+                                future: checkUserAuthedByEmail(userEmail),
+                                builder: (context, authSnapshot) {
+                                  bool auth = authSnapshot.data ?? true;
+                                  if (isAdmin) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (!auth)
+                                          IconButton(
+                                            icon: Icon(Icons.check),
+                                            color: Colors.white,
+                                            onPressed: () {
+                                              setState(() {
+                                                updateAuthField(email, true);
+                                              });
+                                              // Xử lý khi nút xác nhận được nhấn
+                                            },
+                                          ),
+                                        //
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                          ),
+                                          color: Colors.white,
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: Text(
+                                                    'Xác nhận xóa người dùng'),
+                                                content: Text(
+                                                    'Bạn có chắc chắn muốn xóa người dùng $userEmail?'),
+                                                actions: [
+                                                  TextButton(
+                                                    child: Text('Hủy'),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: Text('Xóa'),
+                                                    onPressed: () {
+                                                      deleteUser(email);
+                                                      // deleteUserAccountByEmail(
+                                                      //     email);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  } else {
+                                    return Row();
+                                  }
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     );
@@ -265,6 +469,31 @@ class _AccountTabBarState extends State<AccountTabBar> {
         ),
       ),
     );
+  }
+
+  Future<void> signOutUser() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      print('Đăng xuất thành công');
+    } catch (e) {
+      print('Lỗi đăng xuất: $e');
+    }
+  }
+
+  Future<void> deleteUserAccountByEmail(String email) async {
+    try {
+      List<String> signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+
+      if (signInMethods.isNotEmpty) {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        print('Email đặt lại mật khẩu đã được gửi đến $email');
+      } else {
+        print('Email không tồn tại trong hệ thống');
+      }
+    } catch (e) {
+      print('Lỗi xóa tài khoản người dùng: $e');
+    }
   }
 
   // String getUserDisplayName(String userId) {

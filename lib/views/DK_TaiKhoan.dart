@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'LoginScreen.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class DkTaiKhoan extends StatefulWidget {
   @override
@@ -178,8 +179,6 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
                     0) {
                   registerWithEmailPassword(_usernameController.text.trim(),
                       _passwordController.text, _displayName.text);
-                  // signUp(_usernameController.text, _passwordController.text);
-
                   Navigator.pushReplacementNamed(context, '/');
                 } else
                   _noti.text = "Mật khẩu không trùng khớp";
@@ -210,8 +209,21 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
     await Firebase.initializeApp();
   }
 
+  void createKeyValue(String key) {
+    final databaseRef = FirebaseDatabase.instance.ref();
+    databaseRef.child(key).set(1);
+  }
+
+  String getEmailUsername(String email) {
+    int atIndex = email.indexOf('@');
+    if (atIndex != -1) {
+      return email.substring(0, atIndex);
+    }
+    return email;
+  }
+
 // Đăng ký tài khoản mới
-  Future<void> registerWithEmailPassword(
+  void registerWithEmailPassword(
       String email, String password, String displayName) async {
     try {
       UserCredential userCredential =
@@ -227,12 +239,9 @@ class _DkTaiKhoanState extends State<DkTaiKhoan> {
           .set({
         'email': email,
         'displayName': displayName,
+        'auth': false,
+        'isAdmin': false,
       });
-//                     saveAccountInfo(
-//                     _usernameController.text, _passwordController.text);
-//                 saveCredentials(
-//                     _usernameController.text, _passwordController.text);
-      // Người dùng đã được đăng ký thành công và thông tin đã được lưu vào Firestore
     } catch (e) {
       // Xử lý lỗi nếu có
       print('Lỗi đăng ký: $e');
