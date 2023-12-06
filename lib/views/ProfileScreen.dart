@@ -314,15 +314,16 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                                         email) ==
                                                     false)
                                                   updateAuthField(email, false);
+
+                                                signOutUser();
+                                                Navigator.popUntil(context,
+                                                    (route) => (route).isFirst);
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            LoginPage()));
                                               });
-                                              signOutUser();
-                                              Navigator.popUntil(context,
-                                                  (route) => (route).isFirst);
-                                              Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          LoginPage()));
                                               // Thực hiện các thao tác sau khi đăng xuất thành công
                                             } catch (e) {
                                               print('Lỗi đăng xuất: $e');
