@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width, vertical: 990),
+              horizontal: MediaQuery.of(context).size.width, vertical: 200),
           backgroundColor: Colors.red,
           title: Center(
               child: Text(
@@ -102,9 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                if (barrier) {
-                  Navigator.of(context).pop();
-                }
+                setState(() {
+                  if (barrier) {
+                    Navigator.of(context).pop();
+                  }
+                });
               },
               child: Text(
                 "Đóng",
