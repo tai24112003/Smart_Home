@@ -85,7 +85,7 @@ class _DevicceItemState extends State<DevicceItem> {
             flex: 2,
             child: SizedBox(
               height: 100,
-              child: widget.device.type != "btn"
+              child: widget.device.type != "btn" 
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -170,12 +170,12 @@ class _DevicceItemState extends State<DevicceItem> {
               print("Error parsing double: $e");
               // Handle the error (e.g., set a default value)
               _sliderValue =
-                  0.0; // Set a default value or handle it according to your requirements
+                  255; // Set a default value or handle it according to your requirements
             }
           } else {
             // Handle the case where the snapshot value is null
             _sliderValue =
-                0.0; // Set a default value or handle it according to your requirements
+                255; // Set a default value or handle it according to your requirements
           }
         });
     });
