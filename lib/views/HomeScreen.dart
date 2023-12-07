@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   bool check = false;
   bool barrier = false;
-  String close = "";
 
   @override
   void initState() {
@@ -55,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (isAuthed == true) {
       barrier = true;
-      close = "Đóng";
       Navigator.of(context).pop();
     }
 
@@ -101,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.red,
           title: Center(
               child: Text(
-            "Chờ xác nhận",
+            "Vui lòng chờ xác nhận",
             style: TextStyle(
                 color: Colors.yellow,
                 fontWeight: FontWeight.bold,
