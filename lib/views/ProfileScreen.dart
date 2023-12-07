@@ -425,17 +425,43 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                               // Xử lý khi nút xác nhận được nhấn
                                             },
                                           ),
-                                        //
                                         IconButton(
                                           icon: Icon(
                                             Icons.delete,
                                           ),
                                           color: Colors.white,
                                           onPressed: () {
-                                            setState(() {
-                                              deleteUser(email);
-                                              deleteUserAccountByEmail(email);
-                                            });
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('Xác nhận xóa'),
+                                                  content: Text(
+                                                      'Bạn có chắc chắn muốn $userEmail ?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: Text('Hủy'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: Text('Xóa'),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          deleteUser(userEmail);
+                                                          deleteUserAccountByEmail(
+                                                              email);
+                                                        });
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
                                           },
                                         ),
                                       ],
@@ -528,7 +554,7 @@ class _AccountTabBarState extends State<AccountTabBar> {
         String userId = querySnapshot.docs.first.id;
 
         // Xóa người dùng khỏi Firebase Authentication
-        await FirebaseAuth.instance.currentUser?.delete();
+        //await FirebaseAuth.instance.currentUser?.delete();
 
         // Xóa người dùng khỏi Firestore
         await FirebaseFirestore.instance

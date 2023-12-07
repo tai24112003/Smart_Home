@@ -44,15 +44,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getUserAuthStatus() async {
-    User currentUser = FirebaseAuth.instance.currentUser!;
-    String email = currentUser.email!;
-    String emailString = email!;
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    String email = currentUser!.email!;
+    String emailString = email;
     bool isAuthed = await checkUserAuthedByEmail(emailString);
     if (isAuthed == false && check == false) {
       _showCustomDialog(context, barrier);
       check = true;
     }
-    if (isAuthed == true) {
+    if (isAuthed && check) {
       barrier = true;
       Navigator.of(context).pop();
     }
