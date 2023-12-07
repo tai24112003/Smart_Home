@@ -221,17 +221,31 @@ class _AccountTabBarState extends State<AccountTabBar> {
       length: 2, // Số lượng TabBar
       child: Scaffold(
         bottomNavigationBar: BottomAppBarCustom(active: 1),
-        backgroundColor: Color.fromRGBO(30, 53, 71, 1),
+        backgroundColor: const Color.fromRGBO(30, 53, 71, 1),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(26, 42, 57, 1),
-          title: Text('Profile'),
+          backgroundColor: const Color.fromRGBO(30, 53, 71, 1.0),
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/img/logo.jpg',
+                height: 60,
+                width: 60,
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'Trang cá nhân',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
+          ),
           bottom: TabBar(
             tabs: [
               Tab(
-                text: 'User Info',
+                text: 'Thông tin người dùng',
               ),
               Tab(
-                text: 'User manage',
+                text: 'Quản lí người dùng',
               ),
             ],
           ),

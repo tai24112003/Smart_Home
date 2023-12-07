@@ -55,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (isAuthed && check) {
       barrier = true;
       Navigator.of(context).pop();
-    }
-
+    } else
+      barrier = true;
     // Tiếp tục xử lý dựa trên kết quả isAuthed
   }
 
@@ -111,13 +111,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             TextButton(
-                onPressed: () {
-                  getUserAuthStatus();
-                },
-                child: Text(
-                  "Đóng",
-                  style: TextStyle(color: Colors.white),
-                ))
+              onPressed: () {
+                setState(() {
+                  if (barrier) {
+                    getUserAuthStatus();
+                  }
+                });
+              },
+              child: Text(
+                "Đóng",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ],
         );
       },

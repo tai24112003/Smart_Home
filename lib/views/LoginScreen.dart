@@ -27,9 +27,7 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             SizedBox(height: 50),
             Container(
-                width: 200,
-                height: 200,
-                child: Image.asset("assets/img/logo.jpg")),
+                width: 200, height: 200, child: Image.asset("assets/img/logo.jpg")),
             SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
