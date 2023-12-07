@@ -451,8 +451,8 @@ class _AccountTabBarState extends State<AccountTabBar> {
                                                       onPressed: () {
                                                         setState(() {
                                                           deleteUser(userEmail);
-                                                          deleteUserAccountByEmail(
-                                                              email);
+                                                          // deleteUserAccountByEmail(
+                                                          //     email);
                                                         });
                                                         Navigator.of(context)
                                                             .pop();
@@ -501,10 +501,16 @@ class _AccountTabBarState extends State<AccountTabBar> {
           await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
 
       if (signInMethods.isNotEmpty) {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        print('Email đặt lại mật khẩu đã được gửi đến $email');
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: "temporary_password", // Provide a temporary password
+        );
+
+        await userCredential.user?.delete();
+        print('Người dùng đã được xóa khỏi hệ thống');
       } else {
-        print('Email không tồn tại trong hệ thống');
+        print('Người dùng không tồn tại trong hệ thống');
       }
     } catch (e) {
       print('Lỗi xóa tài khoản người dùng: $e');
